@@ -1,0 +1,14 @@
+# Dependabot opens update PRs; merging still follows the 14-day rule by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: terraform
+    directories:
+      - "/infra/bootstrap"
+      - "/infra/ci"
+      - "/infra/foundation"
+    schedule:
+      interval: weekly
