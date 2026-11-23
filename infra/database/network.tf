@@ -13,14 +13,6 @@ data "aws_subnets" "private" {
   tags = { Tier = "private" }
 }
 
-data "aws_subnets" "public" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.main.id]
-  }
-  tags = { Tier = "public" }
-}
-
 # Database: accepts PostgreSQL only from the bastion. No egress at all
 # (Terraform removes the default allow-all egress rule).
 resource "aws_security_group" "db" {
