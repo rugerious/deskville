@@ -27,18 +27,21 @@ That last sentence is the whole point. Sharing infrastructure is cheap. Proving 
 
 ## Progress
 
-| # | Layer | Status |
-|---|---|---|
-| 0 | Foundations: state bucket, VPC, budget | ✅ 23 Nov 2026 |
-| 1 | Database: PostgreSQL + pgvector, row-level security | ⏳ |
-| 2 | Content: licensed public pages, synthetic records, canaries | ⏳ |
-| 3 | Ingestion: chunking and embeddings, tenant stamped | ⏳ |
-| 4 | API and containers: ECS Fargate, ALB, Cognito | ⏳ |
-| 5 | Assistant: retrieval, tools, Guardrails | ⏳ |
-| 6 | Sites: CloudFront and WAF | ⏳ |
-| 7 | Proof: isolation suite, answer-quality evaluation, cost per tenant | ⏳ |
-| 8 | Observability: OpenTelemetry tracing | ⏳ |
-| 9 | CI/CD: GitHub Actions with OIDC | ✅ 23 Nov 2026 |
+Layers are numbered in the order they are built.
+
+| # | Layer | Status | Evidence |
+|---|---|---|---|
+| 0 | Foundations: state bucket, VPC, budget | ✅ 23 Nov 2026 | [#1](https://github.com/rugerious/deskville/pull/1): private subnets have no route to the internet ([proof below](#what-is-built-so-far)) |
+| 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
+| 2 | Database: PostgreSQL + pgvector, row-level security | ⏳ | |
+| 3 | Content: licensed public pages, synthetic records, canaries | ⏳ | |
+| 4 | Ingestion: chunking and embeddings, tenant stamped | ⏳ | |
+| 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
+| 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
+| 7 | Sites: CloudFront and WAF | ⏳ | |
+| 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
+
+Isolation tests and tracing are not a layer at the end: they start at layer 2 and grow with every layer after it.
 
 ## What is built so far
 
