@@ -1,0 +1,2 @@
+# Copy to backend.hcl and replace with the output of the bootstrap stack.
+bucket = "deskville-tfstate-123456789012"
