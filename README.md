@@ -33,7 +33,7 @@ Layers are numbered in the order they are built.
 |---|---|---|---|
 | 0 | Foundations: state bucket, VPC, budget | ✅ 23 Nov 2026 | [#1](https://github.com/rugerious/deskville/pull/1): private subnets have no route to the internet ([proof below](#what-is-built-so-far)) |
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
-| 2 | Database: PostgreSQL + pgvector, row-level security | ⏳ | |
+| 2 | Database: PostgreSQL + pgvector, row-level security | 🚧 stack and lab switch | |
 | 3 | Content: licensed public pages, synthetic records, canaries | ⏳ | |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ⏳ | |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
@@ -72,17 +72,23 @@ No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a sh
 
 Every apply is followed by a second plan that must report no changes.
 
+### Switching the lab on and off
+
+Some parts cost money by the hour (the database, later the load balancer and containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
+
 The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
 
 ## Repository layout
 
 ```
 .githooks/      pre-commit guard (values it blocks live outside the repo)
-.github/        workflow (plan on PR, approved apply on merge), Dependabot
+.github/        workflows: terraform (plan on PR, approved apply on merge), lab (up/down); Dependabot
 infra/
   bootstrap/    S3 bucket for Terraform state (run once, local state)
   ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
   foundation/   VPC, subnets, gateway endpoints, budget
+  database/     PostgreSQL on RDS + SSM-only bastion (switched by the lab workflow)
+scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh
 docs/           decisions
 ```
 

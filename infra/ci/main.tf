@@ -180,6 +180,16 @@ resource "aws_iam_role_policy" "apply_iam" {
         Resource = "arn:aws:iam::${local.account}:policy/deskville-*"
       },
       {
+        Sid    = "ManageOwnInstanceProfiles"
+        Effect = "Allow"
+        Action = [
+          "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile",
+          "iam:AddRoleToInstanceProfile", "iam:RemoveRoleFromInstanceProfile",
+          "iam:TagInstanceProfile", "iam:UntagInstanceProfile",
+        ]
+        Resource = "arn:aws:iam::${local.account}:instance-profile/deskville-*"
+      },
+      {
         Sid      = "ServiceLinkedRoles"
         Effect   = "Allow"
         Action   = "iam:CreateServiceLinkedRole"
