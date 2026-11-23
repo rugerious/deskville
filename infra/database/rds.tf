@@ -8,8 +8,9 @@ resource "aws_db_parameter_group" "pg18" {
   family = "postgres18"
 
   parameter {
-    name  = "rds.force_ssl"
-    value = "1"
+    name         = "rds.force_ssl"
+    value        = "1"
+    apply_method = "pending-reboot" # what RDS records for this parameter; without it every plan shows a diff
   }
 }
 
