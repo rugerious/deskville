@@ -15,12 +15,12 @@ variable "vpc_cidr" {
 }
 
 variable "budget_limit_usd" {
-  description = "Monthly cost alarm for the whole account, in USD"
+  description = "Monthly cost alarm for Project=deskville, in USD"
   type        = number
   default     = 10
 }
 
 variable "alert_email" {
-  description = "Where budget alerts go"
+  description = "Where budget alerts go (must be a verified budget recipient)"
   type        = string
 }

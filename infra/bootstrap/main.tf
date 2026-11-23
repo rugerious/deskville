@@ -2,11 +2,11 @@
 # Runs ONCE, with local state (kept on your machine, never committed).
 
 terraform {
-  required_version = ">= 1.10"
+  required_version = "~> 1.16.6"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.0"
+      version = "6.72.0"
     }
   }
 }
@@ -15,9 +15,10 @@ provider "aws" {
   region = var.region
   default_tags {
     tags = {
-      Project   = "deskville"
-      Stack     = "bootstrap"
-      ManagedBy = "terraform"
+      Project     = "deskville"
+      Environment = "lab"
+      Stack       = "bootstrap"
+      ManagedBy   = "terraform"
     }
   }
 }

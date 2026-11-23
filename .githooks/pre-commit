@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Blocks a commit when any ADDED line contains a value listed in
+# ~/.config/deskville/forbidden-patterns (one value per line, # = comment).
+# The values themselves never enter the repo: only this script does.
+# 12-digit values (AWS account IDs) are also checked as 1234-5678-9012.
+set -euo pipefail
+
+patterns="${HOME}/.config/deskville/forbidden-patterns"
+if [ ! -s "$patterns" ]; then
+  echo "pre-commit: $patterns is missing or empty; refusing to commit without the guard." >&2
+  exit 1
+fi
+
+added="$(git diff --cached -U0 --no-color | grep '^+' | grep -v '^+++' || true)"
+[ -z "$added" ] && exit 0
+
+blocked=0
+n=0
+while IFS= read -r value || [ -n "$value" ]; do
+  case "$value" in ''|\#*) continue ;; esac
+  n=$((n + 1))
+  variants=("$value")
+  if [[ "$value" =~ ^[0-9]{12}$ ]]; then
+    variants+=("${value:0:4}-${value:4:4}-${value:8:4}")
+  fi
+  for v in "${variants[@]}"; do
+    if printf '%s\n' "$added" | grep -qF -- "$v"; then
+      echo "pre-commit: BLOCKED - staged changes contain forbidden value #$n." >&2
+      blocked=1
+    fi
+  done
+done < "$patterns"
+
+if [ "$blocked" -ne 0 ]; then
+  echo "pre-commit: find it with: git diff --cached | grep -nF -f $patterns" >&2
+  exit 1
+fi
