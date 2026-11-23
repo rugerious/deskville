@@ -1,0 +1,106 @@
+name: terraform
+
+# Pull request -> plan (read-only role).
+# Merge to main -> plan + apply in the 'production' environment (manual approval),
+# then a second plan that must say "No changes".
+# The bootstrap and ci stacks are applied from the laptop only and never run here.
+
+on:
+  pull_request:
+    paths:
+      - "infra/foundation/**"
+      - ".github/workflows/terraform.yml"
+      - ".terraform-version"
+  push:
+    branches: [main]
+    paths:
+      - "infra/foundation/**"
+      - ".github/workflows/terraform.yml"
+      - ".terraform-version"
+
+permissions: {}
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-west-2
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+jobs:
+  plan:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: [foundation]
+    defaults:
+      run:
+        working-directory: infra/${{ matrix.stack }}
+    env:
+      TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: tfver
+        working-directory: .
+        run: echo "version=$(cat .terraform-version)" >> "$GITHUB_OUTPUT"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ steps.tfver.outputs.version }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: fmt
+        run: terraform fmt -check -recursive
+      - name: init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+      - name: validate
+        run: terraform validate -no-color
+      - name: plan
+        run: terraform plan -no-color -lock-timeout=60s
+
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      max-parallel: 1
+      matrix:
+        stack: [foundation]
+    defaults:
+      run:
+        working-directory: infra/${{ matrix.stack }}
+    env:
+      TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: tfver
+        working-directory: .
+        run: echo "version=$(cat .terraform-version)" >> "$GITHUB_OUTPUT"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ steps.tfver.outputs.version }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+      - name: plan
+        run: terraform plan -no-color -lock-timeout=60s -out=apply.tfplan
+      - name: apply
+        run: terraform apply -no-color -lock-timeout=60s apply.tfplan
+      - name: no drift after apply
+        run: terraform plan -no-color -lock-timeout=60s -detailed-exitcode

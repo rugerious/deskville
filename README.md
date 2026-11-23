@@ -38,7 +38,7 @@ That last sentence is the whole point. Sharing infrastructure is cheap. Proving 
 | 6 | Sites: CloudFront and WAF | ⏳ |
 | 7 | Proof: isolation suite, answer-quality evaluation, cost per tenant | ⏳ |
 | 8 | Observability: OpenTelemetry tracing | ⏳ |
-| 9 | CI/CD: GitHub Actions with OIDC | ⏳ |
+| 9 | CI/CD: GitHub Actions with OIDC | ✅ 23 Nov 2026 |
 
 ## What is built so far
 
@@ -58,12 +58,27 @@ Three routes: traffic inside the VPC, and two free gateway endpoints that keep S
 
 Guardrails in place before anything costs money: a monthly budget on everything tagged `Project=deskville`, Terraform and provider versions pinned, and a pre-commit hook that refuses any commit containing the account ID or private addresses.
 
+## How changes reach AWS
+
+No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
+
+| When | Role | Can do |
+|---|---|---|
+| Pull request | `deskville-github-plan` | Read-only, plus the state lock file. Cannot read any S3 object outside the state bucket, nor secret values. |
+| Merge to `main`, after manual approval in the `production` environment | `deskville-github-apply` | Build infrastructure. In IAM it can only create `deskville-*` roles, and only if they carry the `deskville-boundary` permissions boundary. It can never modify its own role, the plan role, or the boundary. |
+
+Every apply is followed by a second plan that must report no changes.
+
+The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
+
 ## Repository layout
 
 ```
 .githooks/      pre-commit guard (values it blocks live outside the repo)
+.github/        workflow (plan on PR, approved apply on merge), Dependabot
 infra/
   bootstrap/    S3 bucket for Terraform state (run once, local state)
+  ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
   foundation/   VPC, subnets, gateway endpoints, budget
 docs/           decisions
 ```
