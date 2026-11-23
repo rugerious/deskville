@@ -7,6 +7,14 @@ data "aws_ssm_parameter" "al2023_arm64" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64"
 }
 
+# One public subnet, chosen by AZ on purpose. ids[0] of a list has no guaranteed
+# order: on 23 Nov it landed in eu-west-2b, which had no t4g.nano capacity.
+data "aws_subnet" "bastion" {
+  vpc_id            = data.aws_vpc.main.id
+  availability_zone = var.bastion_az
+  tags              = { Tier = "public" }
+}
+
 locals {
   boundary_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/deskville-boundary"
 }
@@ -38,8 +46,8 @@ resource "aws_iam_instance_profile" "bastion" {
 resource "aws_instance" "bastion" {
   # SSM parameter values are marked sensitive by the provider; an AMI ID is public.
   ami                         = nonsensitive(data.aws_ssm_parameter.al2023_arm64.value)
-  instance_type               = "t4g.nano"
-  subnet_id                   = data.aws_subnets.public.ids[0]
+  instance_type               = var.bastion_instance_type
+  subnet_id                   = data.aws_subnet.bastion.id
   vpc_security_group_ids      = [aws_security_group.bastion.id]
   iam_instance_profile        = aws_iam_instance_profile.bastion.name
   associate_public_ip_address = true # the SSM agent needs a way out; there is no NAT
