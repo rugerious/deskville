@@ -9,6 +9,7 @@ updates:
     directories:
       - "/infra/bootstrap"
       - "/infra/ci"
+      - "/infra/database"
       - "/infra/foundation"
     schedule:
       interval: weekly

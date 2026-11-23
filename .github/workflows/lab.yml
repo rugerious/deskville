@@ -1,0 +1,65 @@
+name: lab
+
+# Switches the expensive stacks on (up) or off (down). Manual only, and every run
+# waits for approval in the 'production' environment. Nothing here runs on a merge.
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "up = create, down = destroy"
+        type: choice
+        options: [up, down]
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: lab
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-west-2
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: infra/database
+    steps:
+      - uses: actions/checkout@v7
+      - id: tfver
+        working-directory: .
+        run: echo "version=$(cat .terraform-version)" >> "$GITHUB_OUTPUT"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ steps.tfver.outputs.version }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+      - name: plan (up)
+        if: inputs.action == 'up'
+        run: terraform plan -no-color -lock-timeout=60s -out=lab.tfplan
+      - name: plan (down)
+        if: inputs.action == 'down'
+        run: terraform plan -destroy -no-color -lock-timeout=60s -out=lab.tfplan
+      - name: apply
+        run: terraform apply -no-color -lock-timeout=60s lab.tfplan
+      - name: check
+        run: |
+          if [ "${{ inputs.action }}" = "up" ]; then
+            terraform plan -no-color -lock-timeout=60s -detailed-exitcode
+          else
+            test -z "$(terraform state list)" && echo "database stack is empty: nothing left running"
+          fi

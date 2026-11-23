@@ -1,14 +1,17 @@
 name: terraform
 
-# Pull request -> plan (read-only role).
+# Pull request -> plan (read-only role) for every CI-managed stack.
 # Merge to main -> plan + apply in the 'production' environment (manual approval),
-# then a second plan that must say "No changes".
+# then a second plan that must say "No changes" -- for ALWAYS-ON stacks only.
+# Expensive stacks (database) are planned on PRs but switched on and off only by
+# the manual 'lab' workflow, never by a merge.
 # The bootstrap and ci stacks are applied from the laptop only and never run here.
 
 on:
   pull_request:
     paths:
       - "infra/foundation/**"
+      - "infra/database/**"
       - ".github/workflows/terraform.yml"
       - ".terraform-version"
   push:
@@ -39,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        stack: [foundation]
+        stack: [foundation, database]
     defaults:
       run:
         working-directory: infra/${{ matrix.stack }}

@@ -41,3 +41,18 @@ Every role CI creates must carry `deskville-boundary` (enforced by a condition o
 
 ## D13. The plan role reads only the state bucket
 `ReadOnlyAccess` alone could read every S3 object in the account, including other projects' data. An explicit deny limits `s3:GetObject` to the state bucket, and secret values (`secretsmanager:GetSecretValue`, `kms:Decrypt`) are denied too. Expected side effect: when Terraform starts managing S3 objects or secrets, the plan will be refused and this deny will need a precise exception (lesson from the previous project, where exactly that happened).
+
+## D14. PostgreSQL 18.6 on db.t4g.micro, gp3
+On RDS since 26 August 2026 (past the 14-day rule); the release notes of 18.4 updated pgvector to 0.8.2. The cheapest Graviton class that runs it. Single-AZ: this is a lab, and Multi-AZ would double the cost for an availability we don't need to prove yet. The account has no Free Tier credits, so every hour is paid: hence D17.
+
+## D15. RDS keeps the master password
+`manage_master_user_password` creates the password in Secrets Manager and rotates it. Terraform only ever knows the secret's ARN, so the password never reaches the state, and the plan role's deny on secret values (D13) never gets in the way.
+
+## D16. An SSM-only bastion is the only way in
+The database lives in subnets with no route to the internet and accepts PostgreSQL only from the bastion's security group. The bastion has no inbound rules at all: access is a Session Manager port-forward, authenticated by IAM, logged by AWS. It needs a public IP only so its SSM agent can reach AWS (there is no NAT). Later, the containers get the same kind of rule as the bastion.
+
+## D17. Expensive stacks are switched on deliberately, never by a merge
+The database stack is planned on every pull request, but only the manual `lab` workflow creates or destroys it, and that workflow waits for approval in `production`. If the database followed the normal merge-to-apply path, any change to its code would switch it back on and start the meter. After `down`, the workflow checks that the stack's state is empty.
+
+## D18. Lab settings, stated honestly
+No final snapshot, no deletion protection, one day of backups, minor upgrades pinned. Right for a lab that is rebuilt from code on every `up`; wrong for production, where it would be the opposite on every line.
