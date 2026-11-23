@@ -30,6 +30,10 @@ resource "aws_db_instance" "main" {
   # Terraform never sees it, so it never reaches the state.
   manage_master_user_password = true
 
+  # The application role has no password at all: it logs in with a 15-minute
+  # token signed by its IAM role (requires SSL, which is forced).
+  iam_database_authentication_enabled = true
+
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.db.id]
   parameter_group_name   = aws_db_parameter_group.pg18.name
