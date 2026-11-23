@@ -56,3 +56,17 @@ The database stack is planned on every pull request, but only the manual `lab` w
 
 ## D18. Lab settings, stated honestly
 No final snapshot, no deletion protection, one day of backups, minor upgrades pinned. Right for a lab that is rebuilt from code on every `up`; wrong for production, where it would be the opposite on every line.
+
+## D19. The application has no database password
+`deskville_app` is a member of `rds_iam`, so it can only log in with a 15-minute token signed by an IAM identity; a password login is refused because no password exists. Together with OIDC in CI and SSM at the bastion, there is no long-lived credential anywhere between GitHub and the data. Cost: every new connection needs a token (a local signing operation, no network call) and IAM authentication adds a little latency per connection; at large scale a pool or RDS Proxy would absorb that.
+
+## D20. Row-level security, forced, failing closed
+Every tenant table carries `tenant_id`; RLS is enabled and forced, so even the table owner obeys it. Policies compare against `app.current_tenant()`, which reads the transaction setting `app.tenant_id` and raises an error when it is missing: a forgotten tenant must look like a bug, never like an empty result. The application role owns nothing, cannot bypass RLS, cannot alter tables and cannot become the owner.
+**Honest limit:** the application sets `app.tenant_id` from the verified token. RLS protects against query bugs (a missing `WHERE`, a wrong join, a similarity search across tenants); it does not protect against a compromised application process, which could set any tenant. That threat is answered at the edge (layer 5: the tenant comes only from the signed token).
+
+## D21. Migrations are plain SQL, applied once, in order
+`scripts/db-migrate.sh` applies `db/migrations/*.sql` each in its own transaction and records it in `public.deskville_migrations`; a second run skips everything. No framework: the files are readable on their own, and the schema is rebuilt from them on every `lab up`.
+
+## D22. The isolation suite proves the dangerous paths, as the application
+It runs as `deskville_app` with an IAM token, never as an administrator. Seeded data includes canary strings, and Bury's test vector is deliberately closer to the query than Wigan's: a similarity search that ignored the tenant would return Bury first. Twelve checks: no tenant → error; each tenant reads only its own rows, requests and tenant record; vector search stays inside the tenant; no inserting, updating, deleting or moving rows across tenants; no disabling RLS; no becoming the owner. A rolled-back demonstration shows what the owner would see without `FORCE`.
+Before its first run on RDS, the suite was run against a local PostgreSQL 16 (with `real[]` standing in for `vector`): 12/12 PASS; with RLS disabled on `documents` as a mutation test, 8 checks FAILED and the script exited non-zero. A test that has never been seen failing has not been tested.

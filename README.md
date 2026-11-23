@@ -88,7 +88,11 @@ infra/
   ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
   foundation/   VPC, subnets, gateway endpoints, budget
   database/     PostgreSQL on RDS + SSM-only bastion (switched by the lab workflow)
-scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh
+db/
+  migrations/   schema, roles and row-level security (applied in order, once)
+  tests/        isolation suite (runs as the application role, with an IAM token)
+scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
+                db-migrate.sh, db-isolation-test.sh
 docs/           decisions
 ```
 
