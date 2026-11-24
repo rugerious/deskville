@@ -6,7 +6,9 @@
 \set ON_ERROR_STOP 1
 \pset footer off
 
-CREATE TEMP TABLE results (n serial, test text, ok boolean, detail text);
+CREATE TEMP TABLE results (n serial, test text, ok boolean NOT NULL, detail text);
+-- ok is NOT NULL on purpose: a condition that evaluates to NULL (e.g. comparing
+-- with "no result") must not slip through. Every check wraps it in coalesce(..., false).
 
 -- 1. No tenant set: reading must FAIL, not return an empty list.
 DO $$
@@ -28,13 +30,13 @@ BEGIN
          count(*) FILTER (WHERE chunk LIKE '%CANARY-BURY%')
     INTO mine, others, canary FROM app.documents;
   INSERT INTO results (test, ok, detail) VALUES ('Wigan reads only Wigan documents',
-    mine > 0 AND others = 0 AND canary = 0, format('own=%s other=%s bury_canary=%s', mine, others, canary));
+    coalesce(mine > 0 AND others = 0 AND canary = 0, false), format('own=%s other=%s bury_canary=%s', mine, others, canary));
 
   SELECT count(*) INTO others FROM app.service_requests WHERE reference LIKE 'TEST-B-%';
-  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot see Bury requests', others = 0, format('bury_requests=%s', others));
+  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot see Bury requests', coalesce(others = 0, false), format('bury_requests=%s', others));
 
   SELECT count(*) INTO others FROM app.tenants WHERE slug = 'bury';
-  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot see the Bury tenant row', others = 0, format('bury_tenant_rows=%s', others));
+  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot see the Bury tenant row', coalesce(others = 0, false), format('bury_tenant_rows=%s', others));
 END $$;
 
 -- 3. Similarity search (the RAG path). Bury's vector is CLOSER to the query,
@@ -47,7 +49,7 @@ BEGIN
     ORDER BY embedding <=> (ARRAY[1.0, 0.0]::real[] || array_fill(0::real, ARRAY[1022]))::vector
     LIMIT 1;
   INSERT INTO results (test, ok, detail) VALUES ('vector search as Wigan returns only Wigan',
-    top_title = 'TEST Wigan bins', format('top result: %s', coalesce(top_title, '(none)')));
+    coalesce(top_title = 'TEST Wigan bins', false), format('top result: %s', coalesce(top_title, '(none)')));
 END $$;
 
 -- 4. Writing on someone else's behalf must be refused.
@@ -68,18 +70,21 @@ BEGIN
   PERFORM set_config('app.tenant_id', '0000000a-0000-4000-8000-00000000000a', true);
   UPDATE app.documents SET chunk = 'tampered' WHERE title = 'TEST Bury bins';
   GET DIAGNOSTICS n = ROW_COUNT;
-  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot update Bury rows', n = 0, format('rows updated=%s', n));
+  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot update Bury rows', coalesce(n = 0, false), format('rows updated=%s', n));
   DELETE FROM app.documents WHERE title = 'TEST Bury bins';
   GET DIAGNOSTICS n = ROW_COUNT;
-  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot delete Bury rows', n = 0, format('rows deleted=%s', n));
+  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot delete Bury rows', coalesce(n = 0, false), format('rows deleted=%s', n));
 END $$;
 
 -- 6. Moving one of its own rows to another tenant must be refused.
 DO $$
+DECLARE n bigint;
 BEGIN
   PERFORM set_config('app.tenant_id', '0000000a-0000-4000-8000-00000000000a', true);
   UPDATE app.documents SET tenant_id = '0000000b-0000-4000-8000-00000000000b' WHERE title = 'TEST Wigan bins';
-  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot move its row to Bury', false, 'update succeeded');
+  GET DIAGNOSTICS n = ROW_COUNT;
+  INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot move its row to Bury', false,
+    CASE WHEN n = 0 THEN 'row to move not found: the test proves nothing' ELSE 'update succeeded' END);
 EXCEPTION WHEN insufficient_privilege THEN
   INSERT INTO results (test, ok, detail) VALUES ('Wigan cannot move its row to Bury', true, SQLERRM);
 END $$;
@@ -112,7 +117,7 @@ BEGIN
     ORDER BY embedding <=> (ARRAY[0.9, 0.1]::real[] || array_fill(0::real, ARRAY[1022]))::vector
     LIMIT 1;
   INSERT INTO results (test, ok, detail) VALUES ('Bury reads only Bury (incl. vector search)',
-    canary = 0 AND top_title = 'TEST Bury bins', format('wigan_canary=%s top=%s', canary, coalesce(top_title, '(none)')));
+    coalesce(canary = 0 AND top_title = 'TEST Bury bins', false), format('wigan_canary=%s top=%s', canary, coalesce(top_title, '(none)')));
 END $$;
 
 SELECT n AS "#", CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS result, test, detail
@@ -121,7 +126,7 @@ SELECT n AS "#", CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS result, test, detai
 DO $$
 DECLARE failed int;
 BEGIN
-  SELECT count(*) INTO failed FROM results WHERE NOT ok;
+  SELECT count(*) INTO failed FROM results WHERE ok IS NOT TRUE;
   IF failed > 0 THEN
     RAISE EXCEPTION '% isolation test(s) FAILED', failed;
   END IF;
