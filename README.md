@@ -33,7 +33,7 @@ Layers are numbered in the order they are built.
 |---|---|---|---|
 | 0 | Foundations: state bucket, VPC, budget | ✅ 23 Nov 2026 | [#1](https://github.com/rugerious/deskville/pull/1): private subnets have no route to the internet ([proof below](#what-is-built-so-far)) |
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
-| 2 | Database: PostgreSQL + pgvector, row-level security | 🚧 stack and lab switch | |
+| 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: licensed public pages, synthetic records, canaries | ⏳ | |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ⏳ | |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
@@ -60,6 +60,41 @@ $ aws ec2 describe-route-tables --route-table-ids <private-rt> \
 Three routes: traffic inside the VPC, and two free gateway endpoints that keep S3 and DynamoDB traffic on the AWS network. No `0.0.0.0/0`. A database placed here can neither be reached from the internet nor reach out to it.
 
 Guardrails in place before anything costs money: a monthly budget on everything tagged `Project=deskville`, Terraform and provider versions pinned, and a pre-commit hook that refuses any commit containing the account ID or private addresses.
+
+**Layer 2: the database.** PostgreSQL 18.6 on RDS (Graviton), pgvector 0.8.2, in subnets with no route to the internet, reachable only through an SSM bastion with no inbound rules. TLS is forced: a connection without encryption is refused before any password is checked. The application role has no password at all; it logs in with a 15-minute IAM token.
+
+### Isolation, proven on the real database
+
+Every table carries a `tenant_id`; row-level security is enabled and forced, and a session without a tenant gets an error, not an empty result. The suite below runs as the application role, logged in with an IAM token, against seeded data that includes canary strings, and a Bury vector placed deliberately closer to the query than Wigan's, so a similarity search that ignored the tenant would return Bury first.
+
+```
+ current_user = deskville_app (IAM token; a password login is refused: "PAM authentication failed")
+
+  1 | PASS | no tenant set -> error, not data           | app.tenant_id is not set
+  2 | PASS | Wigan reads only Wigan documents           | own=1 other=0 bury_canary=0
+  3 | PASS | Wigan cannot see Bury requests             | bury_requests=0
+  4 | PASS | Wigan cannot see the Bury tenant row       | bury_tenant_rows=0
+  5 | PASS | vector search as Wigan returns only Wigan  | top result: TEST Wigan bins
+  6 | PASS | Wigan cannot insert a row for Bury         | new row violates row-level security policy
+  7 | PASS | Wigan cannot update Bury rows              | rows updated=0
+  8 | PASS | Wigan cannot delete Bury rows              | rows deleted=0
+  9 | PASS | Wigan cannot move its row to Bury          | new row violates row-level security policy
+ 10 | PASS | app cannot disable RLS                     | must be owner of table documents
+ 11 | PASS | app cannot become the owner                | permission denied to set role "deskville_owner"
+ 12 | PASS | Bury reads only Bury (incl. vector search) | wigan_canary=0 top=TEST Bury bins
+ NOTICE:  all 12 isolation tests passed
+```
+
+Who can see across tenants, and why (from the same run, inside rolled-back transactions):
+
+| Who | FORCE | Tenant set | Sees |
+|---|---|---|---|
+| Master user (member of `rds_superuser`) | on | no | everything: on RDS it bypasses RLS, so the application never uses it |
+| Table owner | off | no | everything: why FORCE is on |
+| Table owner | **on** | no | `ERROR: app.tenant_id is not set` |
+| Application role | on | no | `ERROR: app.tenant_id is not set` |
+
+The suite has also been seen failing: with RLS switched off on one table it reports 8 failures and exits non-zero, and a missing test row is reported as "proves nothing", never as a pass.
 
 ## How changes reach AWS
 
