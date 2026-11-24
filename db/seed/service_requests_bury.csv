@@ -1,0 +1,201 @@
+reference,category,status,area,description,created_at,updated_at,doc_id
+BRY/2026/03562,missed-bin,resolved,Whitefield,Whole street's Brown bins left after collection,2026-08-01T11:42:00+00:00,2026-08-08T12:09:00+00:00,bury-waste-missed-bin
+BRY/2026/03574,parking-permit,resolved,Bury,Change of vehicle on resident permit,2026-08-02T10:39:00+00:00,2026-08-10T13:04:00+00:00,bury-parking-permits
+BRY/2026/03584,parking-permit,resolved,Prestwich,Visitor permit request,2026-08-02T16:52:00+00:00,2026-08-11T10:15:00+00:00,bury-parking-permits
+BRY/2026/03590,bulky-collection,closed,Radcliffe,Booked bulky collection not picked up,2026-08-02T17:03:00+00:00,2026-08-18T16:58:00+00:00,bury-waste-bulky
+BRY/2026/03601,missed-bin,resolved,Tottington,Blue bin missed again this week,2026-08-03T17:58:00+00:00,2026-08-05T16:56:00+00:00,bury-waste-missed-bin
+BRY/2026/03605,missed-bin,resolved,Tottington,Whole street's Blue bins left after collection,2026-08-03T18:16:00+00:00,2026-08-09T12:09:00+00:00,bury-waste-missed-bin
+BRY/2026/03625,parking-permit,resolved,Whitefield,Change of vehicle on resident permit,2026-08-04T15:32:00+00:00,2026-08-17T11:19:00+00:00,bury-parking-permits
+BRY/2026/03654,bulky-collection,closed,Bury,Collection request: fridge freezer,2026-08-04T15:52:00+00:00,2026-08-25T09:52:00+00:00,bury-waste-bulky
+BRY/2026/03662,missed-bin,resolved,Radcliffe,Whole street's Green bins left after collection,2026-08-05T09:41:00+00:00,2026-08-10T14:27:00+00:00,bury-waste-missed-bin
+BRY/2026/03694,fly-tipping,resolved,Prestwich,Builder's rubble left by the canal path,2026-08-05T17:33:00+00:00,2026-08-12T12:35:00+00:00,bury-waste-fly-tipping
+BRY/2026/03712,fly-tipping,resolved,Bury,Bags of rubbish dumped on the footpath,2026-08-05T18:12:00+00:00,2026-08-08T15:01:00+00:00,bury-waste-fly-tipping
+BRY/2026/03746,missed-bin,closed,Whitefield,Green bin missed again this week,2026-08-06T09:47:00+00:00,2026-08-16T16:19:00+00:00,bury-waste-missed-bin
+BRY/2026/03774,garden-waste,resolved,Whitefield,Request for an additional garden waste bin,2026-08-06T13:31:00+00:00,2026-08-11T12:55:00+00:00,bury-waste-garden
+BRY/2026/03801,parking-fine,scheduled,Whitefield,Challenge to a penalty charge notice: signs unclear,2026-08-06T14:39:00+00:00,2026-08-08T10:54:00+00:00,bury-parking-fines
+BRY/2026/03821,pothole,resolved,Bury,Deep pothole near the bus stop,2026-08-06T14:42:00+00:00,2026-08-20T15:19:00+00:00,bury-pothole
+BRY/2026/03848,bulky-collection,resolved,Radcliffe,Booked bulky collection not picked up,2026-08-06T18:40:00+00:00,2026-08-19T16:59:00+00:00,bury-waste-bulky
+BRY/2026/03884,fly-tipping,closed,Prestwich,Bags of rubbish dumped on the footpath,2026-08-07T07:11:00+00:00,2026-08-28T13:04:00+00:00,bury-waste-fly-tipping
+BRY/2026/03895,bulky-collection,closed,Prestwich,Booked bulky collection not picked up,2026-08-08T08:07:00+00:00,2026-08-23T10:55:00+00:00,bury-waste-bulky
+BRY/2026/03901,parking-permit,resolved,Ramsbottom,Change of vehicle on resident permit,2026-08-08T11:55:00+00:00,2026-08-10T11:59:00+00:00,bury-parking-permits
+BRY/2026/03918,pothole,resolved,Bury,Sunken drain cover in the carriageway,2026-08-08T12:48:00+00:00,2026-08-09T13:01:00+00:00,bury-pothole
+BRY/2026/03935,parking-permit,resolved,Prestwich,Resident permit renewal not received,2026-08-08T17:36:00+00:00,2026-08-11T09:13:00+00:00,bury-parking-permits
+BRY/2026/03941,bulky-collection,closed,Tottington,Collection request: fridge freezer,2026-08-09T13:56:00+00:00,2026-08-18T16:48:00+00:00,bury-waste-bulky
+BRY/2026/03944,missed-bin,resolved,Prestwich,Whole street's Brown bins left after collection,2026-08-10T13:43:00+00:00,2026-08-19T16:30:00+00:00,bury-waste-missed-bin
+BRY/2026/03980,missed-bin,resolved,Ramsbottom,Blue bin not emptied on the scheduled day,2026-08-10T14:38:00+00:00,2026-08-20T10:27:00+00:00,bury-waste-missed-bin
+BRY/2026/03981,parking-fine,closed,Radcliffe,Challenge to a penalty charge notice: valid permit displayed,2026-08-10T16:25:00+00:00,2026-08-26T13:33:00+00:00,bury-parking-fines
+BRY/2026/03983,pothole,closed,Radcliffe,Pothole on the junction causing cyclists to swerve,2026-08-12T07:36:00+00:00,2026-09-02T14:40:00+00:00,bury-pothole
+BRY/2026/03987,missed-bin,resolved,Ramsbottom,Brown bin not emptied on the scheduled day,2026-08-12T12:56:00+00:00,2026-08-26T13:46:00+00:00,bury-waste-missed-bin
+BRY/2026/03997,bulky-collection,resolved,Bury,Collection request: fridge freezer,2026-08-13T11:05:00+00:00,2026-08-14T12:23:00+00:00,bury-waste-bulky
+BRY/2026/04028,missed-bin,closed,Tottington,Brown bin emptied but left in the road,2026-08-13T17:40:00+00:00,2026-09-02T11:12:00+00:00,bury-waste-missed-bin
+BRY/2026/04032,missed-bin,resolved,Ramsbottom,Green bin missed again this week,2026-08-14T10:41:00+00:00,2026-08-22T12:15:00+00:00,bury-waste-missed-bin
+BRY/2026/04054,parking-permit,resolved,Ramsbottom,Resident permit renewal not received,2026-08-15T14:36:00+00:00,2026-09-02T09:22:00+00:00,bury-parking-permits
+BRY/2026/04074,parking-fine,resolved,Bury,Challenge to a penalty charge notice: valid permit displayed,2026-08-15T15:40:00+00:00,2026-08-27T14:03:00+00:00,bury-parking-fines
+BRY/2026/04077,bulky-collection,resolved,Prestwich,Collection request: fridge freezer,2026-08-16T13:26:00+00:00,2026-09-02T10:52:00+00:00,bury-waste-bulky
+BRY/2026/04106,missed-bin,resolved,Bury,Whole street's Grey bins left after collection,2026-08-16T16:50:00+00:00,2026-08-18T09:34:00+00:00,bury-waste-missed-bin
+BRY/2026/04124,missed-bin,closed,Tottington,Grey bin emptied but left in the road,2026-08-20T09:08:00+00:00,2026-08-29T10:21:00+00:00,bury-waste-missed-bin
+BRY/2026/04157,pothole,closed,Whitefield,Sunken drain cover in the carriageway,2026-08-20T10:14:00+00:00,2026-09-10T09:56:00+00:00,bury-pothole
+BRY/2026/04166,missed-bin,resolved,Bury,Green bin emptied but left in the road,2026-08-20T16:56:00+00:00,2026-08-22T15:14:00+00:00,bury-waste-missed-bin
+BRY/2026/04201,blue-badge,closed,Prestwich,Replacement for a lost Blue Badge,2026-08-21T14:17:00+00:00,2026-09-02T09:07:00+00:00,bury-blue-badge
+BRY/2026/04237,missed-bin,resolved,Radcliffe,Brown bin emptied but left in the road,2026-08-21T15:51:00+00:00,2026-08-29T12:56:00+00:00,bury-waste-missed-bin
+BRY/2026/04274,missed-bin,resolved,Ramsbottom,Blue bin emptied but left in the road,2026-08-22T13:32:00+00:00,2026-09-07T13:18:00+00:00,bury-waste-missed-bin
+BRY/2026/04301,fly-tipping,resolved,Prestwich,Builder's rubble left by the canal path,2026-08-23T07:54:00+00:00,2026-09-03T15:06:00+00:00,bury-waste-fly-tipping
+BRY/2026/04321,missed-bin,resolved,Tottington,Blue bin not emptied on the scheduled day,2026-08-23T11:24:00+00:00,2026-09-10T11:10:00+00:00,bury-waste-missed-bin
+BRY/2026/04351,parking-permit,resolved,Whitefield,Resident permit renewal not received,2026-08-23T13:55:00+00:00,2026-09-11T15:49:00+00:00,bury-parking-permits
+BRY/2026/04374,missed-bin,closed,Ramsbottom,Brown bin not emptied on the scheduled day,2026-08-25T14:30:00+00:00,2026-09-10T16:44:00+00:00,bury-waste-missed-bin
+BRY/2026/04407,fly-tipping,closed,Prestwich,Tyres dumped near the playing field,2026-08-25T18:57:00+00:00,2026-08-30T09:06:00+00:00,bury-waste-fly-tipping
+BRY/2026/04411,parking-fine,resolved,Whitefield,Challenge to a penalty charge notice: signs unclear,2026-08-26T09:09:00+00:00,2026-08-30T14:29:00+00:00,bury-parking-fines
+BRY/2026/04418,parking-fine,resolved,Tottington,Penalty charge paid but reminder received,2026-08-26T19:07:00+00:00,2026-09-04T09:35:00+00:00,bury-parking-fines
+BRY/2026/04428,fly-tipping,closed,Whitefield,Tyres dumped near the playing field,2026-08-27T08:58:00+00:00,2026-09-08T11:26:00+00:00,bury-waste-fly-tipping
+BRY/2026/04456,garden-waste,resolved,Radcliffe,Request for an additional garden waste bin,2026-08-27T14:00:00+00:00,2026-09-01T16:57:00+00:00,bury-waste-garden
+BRY/2026/04491,parking-fine,resolved,Ramsbottom,Challenge to a penalty charge notice: valid permit displayed,2026-08-27T15:46:00+00:00,2026-09-01T15:29:00+00:00,bury-parking-fines
+BRY/2026/04505,fly-tipping,resolved,Whitefield,Household items left in the back alley,2026-08-28T13:55:00+00:00,2026-09-06T16:32:00+00:00,bury-waste-fly-tipping
+BRY/2026/04515,pothole,closed,Tottington,Pothole on the junction causing cyclists to swerve,2026-08-29T08:18:00+00:00,2026-09-06T09:04:00+00:00,bury-pothole
+BRY/2026/04548,missed-bin,resolved,Ramsbottom,Brown bin missed again this week,2026-08-29T09:39:00+00:00,2026-09-03T12:17:00+00:00,bury-waste-missed-bin
+BRY/2026/04553,missed-bin,resolved,Tottington,Blue bin not emptied on the scheduled day,2026-08-29T12:20:00+00:00,2026-09-14T12:15:00+00:00,bury-waste-missed-bin
+BRY/2026/04558,fly-tipping,closed,Bury,Tyres dumped near the playing field,2026-08-31T10:16:00+00:00,2026-09-19T13:04:00+00:00,bury-waste-fly-tipping
+BRY/2026/04576,pothole,closed,Ramsbottom,Sunken drain cover in the carriageway,2026-09-01T17:14:00+00:00,2026-09-11T11:59:00+00:00,bury-pothole
+BRY/2026/04594,fly-tipping,closed,Bury,Bags of rubbish dumped on the footpath,2026-09-01T18:29:00+00:00,2026-09-15T09:51:00+00:00,bury-waste-fly-tipping
+BRY/2026/04613,missed-bin,resolved,Whitefield,Grey bin missed again this week,2026-09-02T07:49:00+00:00,2026-09-12T12:47:00+00:00,bury-waste-missed-bin
+BRY/2026/04614,parking-fine,resolved,Prestwich,Challenge to a penalty charge notice: signs unclear,2026-09-02T17:23:00+00:00,2026-09-22T14:21:00+00:00,bury-parking-fines
+BRY/2026/04648,garden-waste,in-progress,Tottington,Garden waste subscription: sticker not received,2026-09-02T17:51:00+00:00,2026-09-05T12:13:00+00:00,bury-waste-garden
+BRY/2026/04659,missed-bin,closed,Radcliffe,Blue bin emptied but left in the road,2026-09-03T09:43:00+00:00,2026-09-04T14:08:00+00:00,bury-waste-missed-bin
+BRY/2026/04662,missed-bin,closed,Whitefield,Blue bin emptied but left in the road,2026-09-04T07:15:00+00:00,2026-09-06T14:53:00+00:00,bury-waste-missed-bin
+BRY/2026/04677,pothole,resolved,Ramsbottom,Deep pothole near the bus stop,2026-09-06T10:30:00+00:00,2026-09-24T12:47:00+00:00,bury-pothole
+BRY/2026/04702,garden-waste,resolved,Radcliffe,Garden waste bin not collected,2026-09-06T16:29:00+00:00,2026-09-23T09:56:00+00:00,bury-waste-garden
+BRY/2026/04712,missed-bin,closed,Ramsbottom,Green bin missed again this week,2026-09-06T19:37:00+00:00,2026-09-21T10:24:00+00:00,bury-waste-missed-bin
+BRY/2026/04732,pothole,closed,Bury,Sunken drain cover in the carriageway,2026-09-07T12:08:00+00:00,2026-09-15T09:18:00+00:00,bury-pothole
+BRY/2026/04747,bulky-collection,resolved,Radcliffe,Collection request: fridge freezer,2026-09-07T12:10:00+00:00,2026-09-26T15:35:00+00:00,bury-waste-bulky
+BRY/2026/04766,garden-waste,closed,Prestwich,Request for an additional garden waste bin,2026-09-07T13:49:00+00:00,2026-09-26T16:30:00+00:00,bury-waste-garden
+BRY/2026/04802,bulky-collection,closed,Bury,Booked bulky collection not picked up,2026-09-07T14:12:00+00:00,2026-09-22T11:11:00+00:00,bury-waste-bulky
+BRY/2026/04811,bulky-collection,resolved,Ramsbottom,Booked bulky collection not picked up,2026-09-07T17:53:00+00:00,2026-09-11T09:16:00+00:00,bury-waste-bulky
+BRY/2026/04831,garden-waste,closed,Prestwich,Garden waste subscription: sticker not received,2026-09-08T13:26:00+00:00,2026-09-14T16:43:00+00:00,bury-waste-garden
+BRY/2026/04863,missed-bin,resolved,Radcliffe,Whole street's Green bins left after collection,2026-09-09T19:23:00+00:00,2026-09-13T13:03:00+00:00,bury-waste-missed-bin
+BRY/2026/04883,garden-waste,resolved,Prestwich,Request for an additional garden waste bin,2026-09-10T12:01:00+00:00,2026-09-22T10:25:00+00:00,bury-waste-garden
+BRY/2026/04896,missed-bin,closed,Ramsbottom,Grey bin emptied but left in the road,2026-09-10T14:03:00+00:00,2026-09-26T10:08:00+00:00,bury-waste-missed-bin
+BRY/2026/04928,parking-permit,resolved,Tottington,Visitor permit request,2026-09-11T07:08:00+00:00,2026-09-14T09:06:00+00:00,bury-parking-permits
+BRY/2026/04960,missed-bin,closed,Prestwich,Blue bin missed again this week,2026-09-12T17:31:00+00:00,2026-09-22T16:50:00+00:00,bury-waste-missed-bin
+BRY/2026/04979,missed-bin,closed,Whitefield,Grey bin emptied but left in the road,2026-09-13T10:19:00+00:00,2026-10-02T13:32:00+00:00,bury-waste-missed-bin
+BRY/2026/05001,missed-bin,closed,Tottington,Brown bin missed again this week,2026-09-13T11:04:00+00:00,2026-09-18T12:37:00+00:00,bury-waste-missed-bin
+BRY/2026/05038,fly-tipping,resolved,Ramsbottom,Household items left in the back alley,2026-09-13T11:33:00+00:00,2026-09-23T12:09:00+00:00,bury-waste-fly-tipping
+BRY/2026/05045,bulky-collection,resolved,Tottington,Collection request: old sofa and armchair,2026-09-13T15:16:00+00:00,2026-09-20T10:50:00+00:00,bury-waste-bulky
+BRY/2026/05062,missed-bin,closed,Ramsbottom,Blue bin missed again this week,2026-09-13T19:05:00+00:00,2026-09-15T14:47:00+00:00,bury-waste-missed-bin
+BRY/2026/05084,garden-waste,resolved,Whitefield,Request for an additional garden waste bin,2026-09-14T11:18:00+00:00,2026-09-30T12:47:00+00:00,bury-waste-garden
+BRY/2026/05091,pothole,in-progress,Prestwich,Sunken drain cover in the carriageway,2026-09-14T15:26:00+00:00,2026-09-29T13:29:00+00:00,bury-pothole
+BRY/2026/05124,bulky-collection,closed,Tottington,Booked bulky collection not picked up,2026-09-14T16:51:00+00:00,2026-09-26T12:47:00+00:00,bury-waste-bulky
+BRY/2026/05136,pothole,resolved,Bury,Sunken drain cover in the carriageway,2026-09-14T19:01:00+00:00,2026-10-03T16:21:00+00:00,bury-pothole
+BRY/2026/05152,pothole,closed,Ramsbottom,Sunken drain cover in the carriageway,2026-09-15T07:35:00+00:00,2026-09-21T14:12:00+00:00,bury-pothole
+BRY/2026/05174,garden-waste,closed,Bury,Garden waste subscription: sticker not received,2026-09-16T09:12:00+00:00,2026-09-24T16:57:00+00:00,bury-waste-garden
+BRY/2026/05201,blue-badge,resolved,Ramsbottom,Blue Badge renewal,2026-09-16T09:23:00+00:00,2026-09-25T14:02:00+00:00,bury-blue-badge
+BRY/2026/05223,parking-fine,closed,Whitefield,Penalty charge paid but reminder received,2026-09-16T10:01:00+00:00,2026-09-20T13:12:00+00:00,bury-parking-fines
+BRY/2026/05249,garden-waste,resolved,Whitefield,Request for an additional garden waste bin,2026-09-16T10:11:00+00:00,2026-09-25T12:30:00+00:00,bury-waste-garden
+BRY/2026/05283,fly-tipping,resolved,Radcliffe,Bags of rubbish dumped on the footpath,2026-09-16T19:49:00+00:00,2026-09-19T15:27:00+00:00,bury-waste-fly-tipping
+BRY/2026/05288,missed-bin,resolved,Bury,Brown bin not emptied on the scheduled day,2026-09-17T09:48:00+00:00,2026-09-28T13:00:00+00:00,bury-waste-missed-bin
+BRY/2026/05290,missed-bin,resolved,Prestwich,Grey bin not emptied on the scheduled day,2026-09-17T10:32:00+00:00,2026-09-21T12:27:00+00:00,bury-waste-missed-bin
+BRY/2026/05306,garden-waste,resolved,Ramsbottom,Garden waste bin not collected,2026-09-17T11:58:00+00:00,2026-10-06T11:19:00+00:00,bury-waste-garden
+BRY/2026/05327,pothole,resolved,Bury,Deep pothole near the bus stop,2026-09-17T15:56:00+00:00,2026-10-04T16:28:00+00:00,bury-pothole
+BRY/2026/05353,pothole,resolved,Prestwich,Deep pothole near the bus stop,2026-09-17T16:46:00+00:00,2026-10-03T13:12:00+00:00,bury-pothole
+BRY/2026/05365,missed-bin,resolved,Bury,Whole street's Brown bins left after collection,2026-09-20T18:34:00+00:00,2026-09-27T15:28:00+00:00,bury-waste-missed-bin
+BRY/2026/05388,bulky-collection,resolved,Prestwich,Booked bulky collection not picked up,2026-09-21T07:02:00+00:00,2026-10-03T10:42:00+00:00,bury-waste-bulky
+BRY/2026/05406,parking-fine,resolved,Bury,Challenge to a penalty charge notice: valid permit displayed,2026-09-21T15:56:00+00:00,2026-10-11T14:08:00+00:00,bury-parking-fines
+BRY/2026/05431,missed-bin,resolved,Whitefield,Whole street's Green bins left after collection,2026-09-22T16:17:00+00:00,2026-10-09T09:18:00+00:00,bury-waste-missed-bin
+BRY/2026/05446,missed-bin,resolved,Bury,Grey bin missed again this week,2026-09-24T07:11:00+00:00,2026-09-26T15:44:00+00:00,bury-waste-missed-bin
+BRY/2026/05457,blue-badge,closed,Whitefield,Replacement for a lost Blue Badge,2026-09-24T15:21:00+00:00,2026-09-29T16:52:00+00:00,bury-blue-badge
+BRY/2026/05461,pothole,closed,Ramsbottom,Deep pothole near the bus stop,2026-09-26T15:08:00+00:00,2026-10-09T13:02:00+00:00,bury-pothole
+BRY/2026/05469,pothole,resolved,Tottington,Sunken drain cover in the carriageway,2026-09-27T13:33:00+00:00,2026-10-16T13:24:00+00:00,bury-pothole
+BRY/2026/05484,fly-tipping,resolved,Radcliffe,Household items left in the back alley,2026-09-27T13:37:00+00:00,2026-10-11T11:02:00+00:00,bury-waste-fly-tipping
+BRY/2026/05485,pothole,resolved,Bury,Several potholes along the road after the frost,2026-09-28T07:02:00+00:00,2026-10-01T15:33:00+00:00,bury-pothole
+BRY/2026/05511,missed-bin,closed,Whitefield,Grey bin missed again this week,2026-09-28T18:00:00+00:00,2026-10-18T09:56:00+00:00,bury-waste-missed-bin
+BRY/2026/05546,parking-permit,resolved,Ramsbottom,Change of vehicle on resident permit,2026-09-28T18:16:00+00:00,2026-10-12T12:43:00+00:00,bury-parking-permits
+BRY/2026/05564,blue-badge,resolved,Prestwich,New Blue Badge application,2026-09-29T07:04:00+00:00,2026-10-10T15:57:00+00:00,bury-blue-badge
+BRY/2026/05571,bulky-collection,resolved,Ramsbottom,Collection request: mattress and bed frame,2026-09-29T08:36:00+00:00,2026-10-04T09:06:00+00:00,bury-waste-bulky
+BRY/2026/05608,bulky-collection,resolved,Prestwich,Collection request: old sofa and armchair,2026-09-29T12:18:00+00:00,2026-10-01T13:05:00+00:00,bury-waste-bulky
+BRY/2026/05624,pothole,resolved,Radcliffe,Deep pothole near the bus stop,2026-09-29T15:32:00+00:00,2026-10-06T16:35:00+00:00,bury-pothole
+BRY/2026/05627,pothole,resolved,Whitefield,Deep pothole near the bus stop,2026-09-29T16:30:00+00:00,2026-10-08T13:12:00+00:00,bury-pothole
+BRY/2026/05662,parking-fine,closed,Whitefield,Challenge to a penalty charge notice: valid permit displayed,2026-09-29T17:44:00+00:00,2026-10-13T14:22:00+00:00,bury-parking-fines
+BRY/2026/05689,missed-bin,resolved,Tottington,Whole street's Green bins left after collection,2026-09-29T17:48:00+00:00,2026-10-10T13:36:00+00:00,bury-waste-missed-bin
+BRY/2026/05690,missed-bin,closed,Bury,Grey bin emptied but left in the road,2026-09-30T10:35:00+00:00,2026-10-05T09:13:00+00:00,bury-waste-missed-bin
+BRY/2026/05704,missed-bin,resolved,Prestwich,Whole street's Brown bins left after collection,2026-09-30T14:15:00+00:00,2026-10-14T09:12:00+00:00,bury-waste-missed-bin
+BRY/2026/05733,pothole,closed,Radcliffe,Pothole on the junction causing cyclists to swerve,2026-10-01T10:35:00+00:00,2026-10-21T14:57:00+00:00,bury-pothole
+BRY/2026/05764,pothole,resolved,Bury,Deep pothole near the bus stop,2026-10-03T14:54:00+00:00,2026-10-14T15:54:00+00:00,bury-pothole
+BRY/2026/05801,fly-tipping,resolved,Bury,Household items left in the back alley,2026-10-03T15:35:00+00:00,2026-10-13T14:12:00+00:00,bury-waste-fly-tipping
+BRY/2026/05837,pothole,resolved,Tottington,Pothole on the junction causing cyclists to swerve,2026-10-03T18:11:00+00:00,2026-10-14T15:02:00+00:00,bury-pothole
+BRY/2026/05872,fly-tipping,resolved,Bury,Builder's rubble left by the canal path,2026-10-04T07:03:00+00:00,2026-10-22T14:53:00+00:00,bury-waste-fly-tipping
+BRY/2026/05874,pothole,closed,Bury,Sunken drain cover in the carriageway,2026-10-04T16:40:00+00:00,2026-10-06T14:17:00+00:00,bury-pothole
+BRY/2026/05905,bulky-collection,closed,Ramsbottom,Collection request: fridge freezer,2026-10-05T07:23:00+00:00,2026-10-24T10:35:00+00:00,bury-waste-bulky
+BRY/2026/05930,parking-fine,resolved,Bury,Penalty charge paid but reminder received,2026-10-05T19:05:00+00:00,2026-10-10T14:19:00+00:00,bury-parking-fines
+BRY/2026/05957,missed-bin,resolved,Bury,Brown bin missed again this week,2026-10-07T08:30:00+00:00,2026-10-17T12:24:00+00:00,bury-waste-missed-bin
+BRY/2026/05972,missed-bin,resolved,Whitefield,Grey bin missed again this week,2026-10-07T09:54:00+00:00,2026-10-15T11:15:00+00:00,bury-waste-missed-bin
+BRY/2026/05998,parking-fine,closed,Bury,Challenge to a penalty charge notice: signs unclear,2026-10-07T12:50:00+00:00,2026-10-21T09:19:00+00:00,bury-parking-fines
+BRY/2026/06026,pothole,closed,Tottington,Deep pothole near the bus stop,2026-10-07T14:44:00+00:00,2026-10-22T10:06:00+00:00,bury-pothole
+BRY/2026/06063,pothole,closed,Tottington,Sunken drain cover in the carriageway,2026-10-08T07:18:00+00:00,2026-10-27T09:42:00+00:00,bury-pothole
+BRY/2026/06086,missed-bin,resolved,Ramsbottom,Brown bin not emptied on the scheduled day,2026-10-08T09:32:00+00:00,2026-10-09T09:50:00+00:00,bury-waste-missed-bin
+BRY/2026/06116,fly-tipping,closed,Bury,Builder's rubble left by the canal path,2026-10-08T16:03:00+00:00,2026-10-29T09:00:00+00:00,bury-waste-fly-tipping
+BRY/2026/06139,missed-bin,closed,Prestwich,Green bin missed again this week,2026-10-09T08:13:00+00:00,2026-10-21T16:05:00+00:00,bury-waste-missed-bin
+BRY/2026/06174,missed-bin,resolved,Whitefield,Grey bin missed again this week,2026-10-10T19:59:00+00:00,2026-10-24T15:30:00+00:00,bury-waste-missed-bin
+BRY/2026/06185,missed-bin,closed,Radcliffe,Grey bin emptied but left in the road,2026-10-11T14:10:00+00:00,2026-10-21T10:24:00+00:00,bury-waste-missed-bin
+BRY/2026/06203,fly-tipping,resolved,Ramsbottom,Household items left in the back alley,2026-10-12T14:12:00+00:00,2026-11-02T15:28:00+00:00,bury-waste-fly-tipping
+BRY/2026/06211,pothole,resolved,Whitefield,Sunken drain cover in the carriageway,2026-10-13T12:46:00+00:00,2026-10-14T10:28:00+00:00,bury-pothole
+BRY/2026/06216,bulky-collection,resolved,Prestwich,Collection request: fridge freezer,2026-10-13T17:30:00+00:00,2026-10-27T15:07:00+00:00,bury-waste-bulky
+BRY/2026/06229,bulky-collection,scheduled,Whitefield,Booked bulky collection not picked up,2026-10-14T09:56:00+00:00,2026-10-26T10:23:00+00:00,bury-waste-bulky
+BRY/2026/06263,pothole,closed,Ramsbottom,Pothole on the junction causing cyclists to swerve,2026-10-14T15:18:00+00:00,2026-10-25T10:05:00+00:00,bury-pothole
+BRY/2026/06288,bulky-collection,resolved,Whitefield,Collection request: mattress and bed frame,2026-10-15T08:49:00+00:00,2026-10-29T10:43:00+00:00,bury-waste-bulky
+BRY/2026/06304,garden-waste,in-progress,Ramsbottom,Request for an additional garden waste bin,2026-10-16T12:46:00+00:00,2026-11-05T14:59:00+00:00,bury-waste-garden
+BRY/2026/06322,missed-bin,resolved,Whitefield,Whole street's Grey bins left after collection,2026-10-16T14:38:00+00:00,2026-10-28T14:50:00+00:00,bury-waste-missed-bin
+BRY/2026/06330,missed-bin,resolved,Ramsbottom,Blue bin emptied but left in the road,2026-10-17T09:49:00+00:00,2026-10-27T14:26:00+00:00,bury-waste-missed-bin
+BRY/2026/06342,pothole,closed,Radcliffe,Sunken drain cover in the carriageway,2026-10-17T11:13:00+00:00,2026-10-31T13:36:00+00:00,bury-pothole
+BRY/2026/06348,fly-tipping,resolved,Prestwich,Tyres dumped near the playing field,2026-10-17T19:49:00+00:00,2026-11-04T09:01:00+00:00,bury-waste-fly-tipping
+BRY/2026/06349,parking-permit,resolved,Radcliffe,Change of vehicle on resident permit,2026-10-19T07:38:00+00:00,2026-11-04T14:26:00+00:00,bury-parking-permits
+BRY/2026/06366,fly-tipping,resolved,Bury,Tyres dumped near the playing field,2026-10-19T07:58:00+00:00,2026-10-27T13:44:00+00:00,bury-waste-fly-tipping
+BRY/2026/06383,fly-tipping,closed,Bury,Bags of rubbish dumped on the footpath,2026-10-19T13:46:00+00:00,2026-11-03T14:42:00+00:00,bury-waste-fly-tipping
+BRY/2026/06398,parking-permit,resolved,Prestwich,Visitor permit request,2026-10-19T17:17:00+00:00,2026-11-08T11:54:00+00:00,bury-parking-permits
+BRY/2026/06409,fly-tipping,closed,Tottington,Bags of rubbish dumped on the footpath,2026-10-20T10:58:00+00:00,2026-11-05T15:45:00+00:00,bury-waste-fly-tipping
+BRY/2026/06445,bulky-collection,resolved,Radcliffe,Collection request: old sofa and armchair,2026-10-20T13:29:00+00:00,2026-11-05T16:29:00+00:00,bury-waste-bulky
+BRY/2026/06451,parking-permit,in-progress,Tottington,Visitor permit request,2026-10-21T19:29:00+00:00,2026-11-04T12:39:00+00:00,bury-parking-permits
+BRY/2026/06462,pothole,scheduled,Tottington,Several potholes along the road after the frost,2026-10-22T12:30:00+00:00,2026-11-07T09:08:00+00:00,bury-pothole
+BRY/2026/06488,missed-bin,in-progress,Bury,Grey bin not emptied on the scheduled day,2026-10-22T13:35:00+00:00,2026-11-12T09:29:00+00:00,bury-waste-missed-bin
+BRY/2026/06516,bulky-collection,closed,Prestwich,Collection request: mattress and bed frame,2026-10-23T09:54:00+00:00,2026-11-10T13:46:00+00:00,bury-waste-bulky
+BRY/2026/06537,parking-fine,scheduled,Whitefield,Challenge to a penalty charge notice: valid permit displayed,2026-10-23T19:41:00+00:00,2026-11-11T09:53:00+00:00,bury-parking-fines
+BRY/2026/06556,parking-permit,in-progress,Whitefield,Visitor permit request,2026-10-24T16:51:00+00:00,2026-11-01T09:37:00+00:00,bury-parking-permits
+BRY/2026/06562,pothole,received,Ramsbottom,Deep pothole near the bus stop,2026-10-24T18:50:00+00:00,2026-10-24T18:50:00+00:00,bury-pothole
+BRY/2026/06583,pothole,scheduled,Prestwich,Deep pothole near the bus stop,2026-10-25T14:56:00+00:00,2026-10-29T13:50:00+00:00,bury-pothole
+BRY/2026/06618,missed-bin,in-progress,Radcliffe,Blue bin emptied but left in the road,2026-10-25T16:50:00+00:00,2026-11-15T09:55:00+00:00,bury-waste-missed-bin
+BRY/2026/06619,bulky-collection,scheduled,Radcliffe,Collection request: fridge freezer,2026-10-25T19:57:00+00:00,2026-11-14T11:57:00+00:00,bury-waste-bulky
+BRY/2026/06624,fly-tipping,resolved,Radcliffe,Tyres dumped near the playing field,2026-10-26T18:48:00+00:00,2026-11-07T12:29:00+00:00,bury-waste-fly-tipping
+BRY/2026/06629,missed-bin,received,Radcliffe,Green bin missed again this week,2026-10-27T07:07:00+00:00,2026-10-27T07:07:00+00:00,bury-waste-missed-bin
+BRY/2026/06652,blue-badge,in-progress,Bury,Replacement for a lost Blue Badge,2026-10-27T13:11:00+00:00,2026-11-07T12:57:00+00:00,bury-blue-badge
+BRY/2026/06670,missed-bin,in-progress,Bury,Green bin missed again this week,2026-10-27T13:55:00+00:00,2026-10-29T15:30:00+00:00,bury-waste-missed-bin
+BRY/2026/06693,missed-bin,resolved,Ramsbottom,Blue bin emptied but left in the road,2026-10-28T10:09:00+00:00,2026-10-31T16:50:00+00:00,bury-waste-missed-bin
+BRY/2026/06707,bulky-collection,received,Ramsbottom,Booked bulky collection not picked up,2026-10-28T19:35:00+00:00,2026-10-28T19:35:00+00:00,bury-waste-bulky
+BRY/2026/06709,missed-bin,in-progress,Tottington,Grey bin emptied but left in the road,2026-10-29T13:19:00+00:00,2026-11-06T14:34:00+00:00,bury-waste-missed-bin
+BRY/2026/06729,parking-permit,scheduled,Bury,Change of vehicle on resident permit,2026-10-29T15:08:00+00:00,2026-11-19T09:47:00+00:00,bury-parking-permits
+BRY/2026/06735,garden-waste,resolved,Tottington,Request for an additional garden waste bin,2026-10-30T11:31:00+00:00,2026-11-11T09:14:00+00:00,bury-waste-garden
+BRY/2026/06762,parking-permit,scheduled,Radcliffe,Visitor permit request,2026-10-30T14:10:00+00:00,2026-11-10T09:27:00+00:00,bury-parking-permits
+BRY/2026/06777,pothole,in-progress,Tottington,Deep pothole near the bus stop,2026-10-30T14:27:00+00:00,2026-11-19T13:28:00+00:00,bury-pothole
+BRY/2026/06811,pothole,scheduled,Tottington,Deep pothole near the bus stop,2026-10-30T15:52:00+00:00,2026-11-03T15:27:00+00:00,bury-pothole
+BRY/2026/06823,garden-waste,scheduled,Bury,Request for an additional garden waste bin,2026-10-31T16:28:00+00:00,2026-11-04T15:38:00+00:00,bury-waste-garden
+BRY/2026/06840,garden-waste,closed,Whitefield,Request for an additional garden waste bin,2026-10-31T19:45:00+00:00,2026-11-09T15:56:00+00:00,bury-waste-garden
+BRY/2026/06863,missed-bin,in-progress,Radcliffe,Blue bin emptied but left in the road,2026-11-01T19:47:00+00:00,2026-11-13T12:24:00+00:00,bury-waste-missed-bin
+BRY/2026/06888,blue-badge,in-progress,Tottington,Replacement for a lost Blue Badge,2026-11-02T14:00:00+00:00,2026-11-05T16:11:00+00:00,bury-blue-badge
+BRY/2026/06916,bulky-collection,in-progress,Whitefield,Collection request: old sofa and armchair,2026-11-04T13:50:00+00:00,2026-11-14T11:15:00+00:00,bury-waste-bulky
+BRY/2026/06934,blue-badge,resolved,Prestwich,New Blue Badge application,2026-11-05T08:10:00+00:00,2026-11-13T10:56:00+00:00,bury-blue-badge
+BRY/2026/06964,missed-bin,in-progress,Bury,Brown bin not emptied on the scheduled day,2026-11-05T14:49:00+00:00,2026-11-09T13:05:00+00:00,bury-waste-missed-bin
+BRY/2026/06996,blue-badge,in-progress,Ramsbottom,New Blue Badge application,2026-11-07T10:00:00+00:00,2026-11-14T10:42:00+00:00,bury-blue-badge
+BRY/2026/07000,missed-bin,scheduled,Whitefield,Grey bin not emptied on the scheduled day,2026-11-08T09:08:00+00:00,2026-11-20T12:10:00+00:00,bury-waste-missed-bin
+BRY/2026/07018,garden-waste,in-progress,Prestwich,Garden waste bin not collected,2026-11-08T17:37:00+00:00,2026-11-11T15:50:00+00:00,bury-waste-garden
+BRY/2026/07051,missed-bin,in-progress,Whitefield,Blue bin missed again this week,2026-11-08T18:17:00+00:00,2026-11-18T16:53:00+00:00,bury-waste-missed-bin
+BRY/2026/07068,missed-bin,in-progress,Radcliffe,Grey bin emptied but left in the road,2026-11-09T11:09:00+00:00,2026-11-20T11:34:00+00:00,bury-waste-missed-bin
+BRY/2026/07075,parking-permit,closed,Prestwich,Visitor permit request,2026-11-09T12:42:00+00:00,2026-11-16T14:21:00+00:00,bury-parking-permits
+BRY/2026/07112,missed-bin,resolved,Tottington,Grey bin not emptied on the scheduled day,2026-11-10T12:14:00+00:00,2026-11-17T13:58:00+00:00,bury-waste-missed-bin
+BRY/2026/07146,garden-waste,scheduled,Tottington,Garden waste subscription: sticker not received,2026-11-10T18:34:00+00:00,2026-11-15T14:21:00+00:00,bury-waste-garden
+BRY/2026/07170,parking-permit,in-progress,Ramsbottom,Change of vehicle on resident permit,2026-11-11T15:36:00+00:00,2026-11-15T10:08:00+00:00,bury-parking-permits
+BRY/2026/07174,garden-waste,scheduled,Ramsbottom,Garden waste subscription: sticker not received,2026-11-12T12:06:00+00:00,2026-11-15T11:01:00+00:00,bury-waste-garden
+BRY/2026/07210,missed-bin,resolved,Ramsbottom,Green bin missed again this week,2026-11-12T15:26:00+00:00,2026-11-17T13:43:00+00:00,bury-waste-missed-bin
+BRY/2026/07232,bulky-collection,received,Whitefield,Collection request: old sofa and armchair,2026-11-13T09:11:00+00:00,2026-11-13T09:11:00+00:00,bury-waste-bulky
+BRY/2026/07265,missed-bin,received,Radcliffe,Blue bin emptied but left in the road,2026-11-13T15:40:00+00:00,2026-11-13T15:40:00+00:00,bury-waste-missed-bin
+BRY/2026/07300,pothole,scheduled,Tottington,Several potholes along the road after the frost,2026-11-16T11:17:00+00:00,2026-11-20T09:09:00+00:00,bury-pothole
+BRY/2026/07309,blue-badge,scheduled,Tottington,Replacement for a lost Blue Badge,2026-11-16T15:07:00+00:00,2026-11-18T12:46:00+00:00,bury-blue-badge
+BRY/2026/07310,missed-bin,in-progress,Prestwich,Brown bin not emptied on the scheduled day,2026-11-17T08:52:00+00:00,2026-11-18T09:31:00+00:00,bury-waste-missed-bin
+BRY/2026/07330,pothole,received,Bury,Several potholes along the road after the frost,2026-11-20T08:13:00+00:00,2026-11-20T08:13:00+00:00,bury-pothole
+BRY/2026/07366,bulky-collection,received,Prestwich,Booked bulky collection not picked up,2026-11-20T09:39:00+00:00,2026-11-20T09:39:00+00:00,bury-waste-bulky
+BRY/2026/07376,pothole,in-progress,Prestwich,Deep pothole near the bus stop,2026-11-20T15:07:00+00:00,2026-11-20T15:35:00+00:00,bury-pothole
