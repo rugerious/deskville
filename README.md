@@ -6,14 +6,16 @@ Deskville is a multi-tenant assistant platform on AWS. Each town (tenant) gets i
 
 That last sentence is the whole point. Sharing infrastructure is cheap. Proving that sharing is safe is the hard part, and it's the part this project sets out to measure.
 
-> **Unofficial demonstration.** This project is not affiliated with, endorsed by or operated on behalf of any council. Public information is reused under its licence and attributed to its source. All resident data in this project is fictional.
+> **Unofficial demonstration.** This project is not affiliated with, endorsed by or operated on behalf of any council. Council content is written in our own words from facts on the councils' public pages, and every document links its sources. All resident data in this project is fictional.
 
 ## Tenants
 
-| Tenant | Content source | Licence |
+| Tenant | Content | Resident data |
 |---|---|---|
-| Bury | bury.gov.uk public pages | Open Government Licence v3.0 (non-commercial re-use), attributed |
-| Wigan | wigan.gov.uk open data; page text pending a re-use request | Open Government Licence v3.0 (open data) |
+| Wigan | 20 documents written in our own words from facts on wigan.gov.uk, each linking its sources | 200 synthetic service requests |
+| Bury | 20 documents written in our own words from facts on bury.gov.uk, each linking its sources | 200 synthetic service requests |
+
+Same topics for both councils, on purpose: similar questions produce similar embeddings, which makes the isolation tests demanding. Details in [`content/README.md`](content/README.md).
 
 ## Architecture (target)
 
@@ -34,7 +36,7 @@ Layers are numbered in the order they are built.
 | 0 | Foundations: state bucket, VPC, budget | ✅ 23 Nov 2026 | [#1](https://github.com/rugerious/deskville/pull/1): private subnets have no route to the internet ([proof below](#what-is-built-so-far)) |
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
-| 3 | Content: licensed public pages, synthetic records, canaries | ⏳ | |
+| 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ⏳ | |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
@@ -96,6 +98,26 @@ Who can see across tenants, and why (from the same run, inside rolled-back trans
 
 The suite has also been seen failing: with RLS switched off on one table it reports 8 failures and exits non-zero, and a missing test row is reported as "proves nothing", never as a pass.
 
+### Content and resident data
+
+- **40 documents** (20 per council) answering the same everyday questions for both: bins, council tax, parking, potholes, licences, planning, Blue Badge, school admissions, births and deaths, contact. Written in our own words from facts on the councils' public pages; each has its sources and the date they were read ([inventory](content/inventory.csv)). The same bin colours mean different things in each council: a leak would give a confident, wrong answer.
+- **400 synthetic service requests** from a fixed-seed generator: the same command always produces byte-identical files. No names, emails, phone numbers or addresses; towns only. Each council has its own reference format (`WGN-26-006985`, `BRY/2026/07376`), and each request points to the document that explains its service.
+- **Two canary documents**: one fictional internal note per council, on the most-asked topic, with a unique code that must never appear in the other council's results.
+
+Loaded on RDS on 24 Nov (migration 003, then the loader), and read back **as the application role, with an IAM token**, looking up a real Bury reference from each side:
+
+```
+   who    | requests | bury_refs | lookup_bury_ref
+----------+----------+-----------+-----------------
+ as Wigan |      200 |         0 |               0
+
+   who   | requests | wigan_refs |                       own_lookup
+---------+----------+------------+---------------------------------------------------------
+ as Bury |      200 |          0 | BRY/2026/07376 | in-progress | Prestwich | bury-pothole
+```
+
+The same session re-ran the isolation suite: 12/12 PASS. Two things found on the way, before any money was spent ([D26](docs/DECISIONS.md)): PostgreSQL refuses `COPY` into a table with row-level security, so the loader goes through a temporary table and `INSERT ... SELECT`, checked row by row; and RLS guarantees *where* a row lands, not that it was the right file, so the loader also checks every reference against its council's format and rolls back on a mismatch.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -111,6 +133,8 @@ Every apply is followed by a second plan that must report no changes.
 
 Some parts cost money by the hour (the database, later the load balancer and containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
 
+A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `lab down`. The session on 24 Nov took about 25 minutes from `up` to `down`.
+
 The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
 
 ## Repository layout
@@ -123,11 +147,14 @@ infra/
   ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
   foundation/   VPC, subnets, gateway endpoints, budget
   database/     PostgreSQL on RDS + SSM-only bastion (switched by the lab workflow)
+content/        council documents (own words, sources linked), inventory, canaries
 db/
-  migrations/   schema, roles and row-level security (applied in order, once)
+  migrations/   schema, roles, row-level security, tenants (applied in order, once)
+  seed/         synthetic service requests (generated, reproducible)
   tests/        isolation suite (runs as the application role, with an IAM token)
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
-                db-migrate.sh, db-isolation-test.sh
+                db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
+                gen-service-requests.py
 docs/           decisions
 ```
 
