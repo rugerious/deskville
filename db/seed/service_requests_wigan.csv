@@ -1,0 +1,201 @@
+reference,category,status,area,description,created_at,updated_at,doc_id
+WGN-26-003274,missed-bin,closed,Ince,Blue bin emptied but left in the road,2026-08-01T08:00:00+00:00,2026-08-19T09:31:00+00:00,wigan-waste-missed-bin
+WGN-26-003284,bulky-collection,resolved,Ashton-in-Makerfield,Collection request: old sofa and armchair,2026-08-01T10:58:00+00:00,2026-08-22T14:01:00+00:00,wigan-waste-bulky
+WGN-26-003304,pothole,resolved,Orrell,Deep pothole near the bus stop,2026-08-02T14:41:00+00:00,2026-08-06T09:42:00+00:00,wigan-pothole
+WGN-26-003310,blue-badge,scheduled,Orrell,Replacement for a lost Blue Badge,2026-08-03T18:25:00+00:00,2026-08-07T11:06:00+00:00,wigan-blue-badge
+WGN-26-003326,pothole,closed,Standish,Several potholes along the road after the frost,2026-08-04T11:14:00+00:00,2026-08-15T16:28:00+00:00,wigan-pothole
+WGN-26-003330,pothole,resolved,Hindley,Several potholes along the road after the frost,2026-08-04T14:40:00+00:00,2026-08-23T10:51:00+00:00,wigan-pothole
+WGN-26-003352,missed-bin,closed,Standish,Brown bin emptied but left in the road,2026-08-04T15:13:00+00:00,2026-08-05T12:52:00+00:00,wigan-waste-missed-bin
+WGN-26-003371,pothole,resolved,Lowton,Deep pothole near the bus stop,2026-08-06T12:53:00+00:00,2026-08-12T09:57:00+00:00,wigan-pothole
+WGN-26-003387,pothole,scheduled,Leigh,Sunken drain cover in the carriageway,2026-08-07T07:57:00+00:00,2026-08-28T14:04:00+00:00,wigan-pothole
+WGN-26-003409,bulky-collection,closed,Golborne,Collection request: fridge freezer,2026-08-08T18:03:00+00:00,2026-08-28T13:56:00+00:00,wigan-waste-bulky
+WGN-26-003446,pothole,closed,Ince,Pothole on the junction causing cyclists to swerve,2026-08-09T07:05:00+00:00,2026-08-22T10:57:00+00:00,wigan-pothole
+WGN-26-003464,fly-tipping,in-progress,Ince,Builder's rubble left by the canal path,2026-08-09T15:21:00+00:00,2026-08-13T13:27:00+00:00,wigan-waste-fly-tipping
+WGN-26-003470,garden-waste,resolved,Ashton-in-Makerfield,Garden waste subscription: sticker not received,2026-08-09T18:46:00+00:00,2026-08-12T10:20:00+00:00,wigan-waste-garden
+WGN-26-003477,garden-waste,scheduled,Shevington,Garden waste subscription: sticker not received,2026-08-10T15:55:00+00:00,2026-08-30T09:11:00+00:00,wigan-waste-garden
+WGN-26-003497,pothole,resolved,Tyldesley,Several potholes along the road after the frost,2026-08-11T12:24:00+00:00,2026-08-25T12:38:00+00:00,wigan-pothole
+WGN-26-003523,pothole,resolved,Shevington,Several potholes along the road after the frost,2026-08-13T07:49:00+00:00,2026-08-27T12:27:00+00:00,wigan-pothole
+WGN-26-003532,pothole,resolved,Atherton,Several potholes along the road after the frost,2026-08-13T12:02:00+00:00,2026-08-30T09:19:00+00:00,wigan-pothole
+WGN-26-003533,pothole,resolved,Tyldesley,Pothole on the junction causing cyclists to swerve,2026-08-13T18:28:00+00:00,2026-08-29T09:28:00+00:00,wigan-pothole
+WGN-26-003567,fly-tipping,closed,Tyldesley,Household items left in the back alley,2026-08-13T18:29:00+00:00,2026-08-18T10:04:00+00:00,wigan-waste-fly-tipping
+WGN-26-003593,missed-bin,closed,Golborne,Whole street's Green bins left after collection,2026-08-15T07:50:00+00:00,2026-08-17T10:34:00+00:00,wigan-waste-missed-bin
+WGN-26-003595,pothole,scheduled,Tyldesley,Deep pothole near the bus stop,2026-08-15T10:42:00+00:00,2026-08-31T09:55:00+00:00,wigan-pothole
+WGN-26-003631,missed-bin,scheduled,Ashton-in-Makerfield,Blue bin missed again this week,2026-08-15T19:57:00+00:00,2026-08-22T11:19:00+00:00,wigan-waste-missed-bin
+WGN-26-003639,fly-tipping,closed,Atherton,Builder's rubble left by the canal path,2026-08-16T10:06:00+00:00,2026-08-23T15:10:00+00:00,wigan-waste-fly-tipping
+WGN-26-003667,missed-bin,scheduled,Tyldesley,Green bin not emptied on the scheduled day,2026-08-16T13:26:00+00:00,2026-09-04T16:22:00+00:00,wigan-waste-missed-bin
+WGN-26-003671,fly-tipping,resolved,Leigh,Bags of rubbish dumped on the footpath,2026-08-16T17:04:00+00:00,2026-08-19T12:24:00+00:00,wigan-waste-fly-tipping
+WGN-26-003689,missed-bin,resolved,Standish,Black bin emptied but left in the road,2026-08-16T17:25:00+00:00,2026-08-26T11:10:00+00:00,wigan-waste-missed-bin
+WGN-26-003697,missed-bin,closed,Tyldesley,Green bin missed again this week,2026-08-17T19:51:00+00:00,2026-08-18T11:38:00+00:00,wigan-waste-missed-bin
+WGN-26-003712,parking-permit,resolved,Ince,Change of vehicle on resident permit,2026-08-18T11:55:00+00:00,2026-09-03T16:39:00+00:00,wigan-parking-permits
+WGN-26-003733,missed-bin,resolved,Atherton,Brown bin not emptied on the scheduled day,2026-08-18T15:55:00+00:00,2026-08-24T16:41:00+00:00,wigan-waste-missed-bin
+WGN-26-003754,bulky-collection,scheduled,Wigan,Collection request: fridge freezer,2026-08-18T16:03:00+00:00,2026-08-25T09:58:00+00:00,wigan-waste-bulky
+WGN-26-003767,fly-tipping,resolved,Wigan,Tyres dumped near the playing field,2026-08-20T10:09:00+00:00,2026-08-24T11:46:00+00:00,wigan-waste-fly-tipping
+WGN-26-003790,garden-waste,closed,Leigh,Garden waste subscription: sticker not received,2026-08-20T11:37:00+00:00,2026-09-01T16:16:00+00:00,wigan-waste-garden
+WGN-26-003825,pothole,closed,Wigan,Pothole on the junction causing cyclists to swerve,2026-08-21T11:02:00+00:00,2026-08-29T09:59:00+00:00,wigan-pothole
+WGN-26-003837,garden-waste,in-progress,Leigh,Garden waste subscription: sticker not received,2026-08-21T13:11:00+00:00,2026-08-26T10:37:00+00:00,wigan-waste-garden
+WGN-26-003841,missed-bin,scheduled,Ashton-in-Makerfield,Whole street's Green bins left after collection,2026-08-21T19:18:00+00:00,2026-09-07T13:29:00+00:00,wigan-waste-missed-bin
+WGN-26-003854,garden-waste,resolved,Hindley,Garden waste bin not collected,2026-08-22T12:26:00+00:00,2026-08-27T15:59:00+00:00,wigan-waste-garden
+WGN-26-003855,missed-bin,resolved,Tyldesley,Black bin emptied but left in the road,2026-08-22T13:17:00+00:00,2026-08-28T11:57:00+00:00,wigan-waste-missed-bin
+WGN-26-003888,blue-badge,closed,Orrell,Replacement for a lost Blue Badge,2026-08-22T15:47:00+00:00,2026-08-23T12:02:00+00:00,wigan-blue-badge
+WGN-26-003925,pothole,resolved,Lowton,Deep pothole near the bus stop,2026-08-23T11:08:00+00:00,2026-08-30T11:23:00+00:00,wigan-pothole
+WGN-26-003932,bulky-collection,in-progress,Ashton-in-Makerfield,Collection request: mattress and bed frame,2026-08-23T13:08:00+00:00,2026-09-04T15:57:00+00:00,wigan-waste-bulky
+WGN-26-003936,missed-bin,resolved,Atherton,Blue bin missed again this week,2026-08-23T13:58:00+00:00,2026-08-25T14:21:00+00:00,wigan-waste-missed-bin
+WGN-26-003957,fly-tipping,resolved,Golborne,Builder's rubble left by the canal path,2026-08-24T07:46:00+00:00,2026-09-08T10:37:00+00:00,wigan-waste-fly-tipping
+WGN-26-003976,parking-permit,closed,Ince,Visitor permit request,2026-08-24T18:14:00+00:00,2026-08-28T09:07:00+00:00,wigan-parking-permits
+WGN-26-003997,pothole,resolved,Hindley,Deep pothole near the bus stop,2026-08-24T18:18:00+00:00,2026-09-03T15:15:00+00:00,wigan-pothole
+WGN-26-004003,missed-bin,closed,Ince,Blue bin emptied but left in the road,2026-08-26T18:25:00+00:00,2026-09-12T12:02:00+00:00,wigan-waste-missed-bin
+WGN-26-004010,missed-bin,resolved,Atherton,Black bin not emptied on the scheduled day,2026-08-27T14:04:00+00:00,2026-09-01T15:04:00+00:00,wigan-waste-missed-bin
+WGN-26-004042,missed-bin,closed,Hindley,Black bin emptied but left in the road,2026-08-28T12:04:00+00:00,2026-09-01T09:58:00+00:00,wigan-waste-missed-bin
+WGN-26-004077,missed-bin,closed,Orrell,Green bin emptied but left in the road,2026-08-28T19:32:00+00:00,2026-09-08T10:17:00+00:00,wigan-waste-missed-bin
+WGN-26-004103,fly-tipping,resolved,Ince,Tyres dumped near the playing field,2026-08-29T16:12:00+00:00,2026-09-17T10:18:00+00:00,wigan-waste-fly-tipping
+WGN-26-004115,parking-permit,resolved,Orrell,Change of vehicle on resident permit,2026-08-30T14:39:00+00:00,2026-09-16T09:26:00+00:00,wigan-parking-permits
+WGN-26-004137,missed-bin,resolved,Tyldesley,Whole street's Blue bins left after collection,2026-08-30T18:43:00+00:00,2026-09-05T11:42:00+00:00,wigan-waste-missed-bin
+WGN-26-004142,missed-bin,in-progress,Wigan,Brown bin not emptied on the scheduled day,2026-08-30T19:22:00+00:00,2026-09-14T11:35:00+00:00,wigan-waste-missed-bin
+WGN-26-004162,pothole,resolved,Tyldesley,Deep pothole near the bus stop,2026-09-01T11:37:00+00:00,2026-09-05T16:37:00+00:00,wigan-pothole
+WGN-26-004175,parking-fine,closed,Hindley,Challenge to a penalty charge notice: signs unclear,2026-09-01T12:12:00+00:00,2026-09-10T14:45:00+00:00,wigan-parking-fines
+WGN-26-004202,garden-waste,closed,Ince,Garden waste subscription: sticker not received,2026-09-01T17:05:00+00:00,2026-09-10T13:23:00+00:00,wigan-waste-garden
+WGN-26-004214,pothole,in-progress,Wigan,Pothole on the junction causing cyclists to swerve,2026-09-02T10:48:00+00:00,2026-09-11T15:28:00+00:00,wigan-pothole
+WGN-26-004216,missed-bin,resolved,Leigh,Green bin not emptied on the scheduled day,2026-09-02T14:42:00+00:00,2026-09-18T15:21:00+00:00,wigan-waste-missed-bin
+WGN-26-004227,missed-bin,closed,Hindley,Green bin missed again this week,2026-09-02T17:08:00+00:00,2026-09-09T10:25:00+00:00,wigan-waste-missed-bin
+WGN-26-004237,missed-bin,resolved,Ashton-in-Makerfield,Black bin not emptied on the scheduled day,2026-09-02T19:18:00+00:00,2026-09-05T11:26:00+00:00,wigan-waste-missed-bin
+WGN-26-004273,bulky-collection,closed,Golborne,Booked bulky collection not picked up,2026-09-04T14:16:00+00:00,2026-09-19T13:40:00+00:00,wigan-waste-bulky
+WGN-26-004288,missed-bin,resolved,Standish,Black bin emptied but left in the road,2026-09-04T17:26:00+00:00,2026-09-13T10:54:00+00:00,wigan-waste-missed-bin
+WGN-26-004308,fly-tipping,scheduled,Tyldesley,Bags of rubbish dumped on the footpath,2026-09-06T15:26:00+00:00,2026-09-27T12:12:00+00:00,wigan-waste-fly-tipping
+WGN-26-004323,parking-permit,resolved,Atherton,Change of vehicle on resident permit,2026-09-06T16:53:00+00:00,2026-09-10T09:30:00+00:00,wigan-parking-permits
+WGN-26-004352,missed-bin,resolved,Leigh,Whole street's Brown bins left after collection,2026-09-06T17:02:00+00:00,2026-09-15T09:05:00+00:00,wigan-waste-missed-bin
+WGN-26-004354,bulky-collection,resolved,Standish,Collection request: old sofa and armchair,2026-09-06T19:21:00+00:00,2026-09-22T15:26:00+00:00,wigan-waste-bulky
+WGN-26-004368,missed-bin,resolved,Wigan,Whole street's Brown bins left after collection,2026-09-06T19:22:00+00:00,2026-09-13T10:20:00+00:00,wigan-waste-missed-bin
+WGN-26-004399,parking-permit,resolved,Golborne,Change of vehicle on resident permit,2026-09-08T16:23:00+00:00,2026-09-18T11:20:00+00:00,wigan-parking-permits
+WGN-26-004407,missed-bin,resolved,Hindley,Brown bin not emptied on the scheduled day,2026-09-10T13:40:00+00:00,2026-09-30T15:49:00+00:00,wigan-waste-missed-bin
+WGN-26-004437,fly-tipping,resolved,Golborne,Household items left in the back alley,2026-09-11T09:03:00+00:00,2026-10-01T09:30:00+00:00,wigan-waste-fly-tipping
+WGN-26-004457,missed-bin,closed,Tyldesley,Blue bin missed again this week,2026-09-11T09:19:00+00:00,2026-09-25T12:32:00+00:00,wigan-waste-missed-bin
+WGN-26-004486,parking-permit,resolved,Ashton-in-Makerfield,Resident permit renewal not received,2026-09-11T16:52:00+00:00,2026-09-14T10:07:00+00:00,wigan-parking-permits
+WGN-26-004523,bulky-collection,closed,Orrell,Booked bulky collection not picked up,2026-09-12T08:39:00+00:00,2026-09-17T09:01:00+00:00,wigan-waste-bulky
+WGN-26-004552,missed-bin,scheduled,Shevington,Green bin emptied but left in the road,2026-09-12T19:26:00+00:00,2026-09-21T09:08:00+00:00,wigan-waste-missed-bin
+WGN-26-004553,fly-tipping,resolved,Leigh,Household items left in the back alley,2026-09-13T11:08:00+00:00,2026-09-17T15:03:00+00:00,wigan-waste-fly-tipping
+WGN-26-004574,fly-tipping,resolved,Golborne,Household items left in the back alley,2026-09-14T08:22:00+00:00,2026-09-21T14:22:00+00:00,wigan-waste-fly-tipping
+WGN-26-004584,bulky-collection,closed,Golborne,Booked bulky collection not picked up,2026-09-14T11:21:00+00:00,2026-10-03T13:55:00+00:00,wigan-waste-bulky
+WGN-26-004593,garden-waste,closed,Shevington,Request for an additional garden waste bin,2026-09-14T13:18:00+00:00,2026-10-04T14:45:00+00:00,wigan-waste-garden
+WGN-26-004630,missed-bin,resolved,Ince,Blue bin not emptied on the scheduled day,2026-09-14T14:14:00+00:00,2026-09-27T16:15:00+00:00,wigan-waste-missed-bin
+WGN-26-004639,fly-tipping,resolved,Orrell,Bags of rubbish dumped on the footpath,2026-09-14T18:54:00+00:00,2026-09-25T10:36:00+00:00,wigan-waste-fly-tipping
+WGN-26-004642,pothole,resolved,Hindley,Pothole on the junction causing cyclists to swerve,2026-09-16T07:02:00+00:00,2026-09-29T11:22:00+00:00,wigan-pothole
+WGN-26-004644,missed-bin,resolved,Standish,Brown bin not emptied on the scheduled day,2026-09-16T17:53:00+00:00,2026-09-23T09:27:00+00:00,wigan-waste-missed-bin
+WGN-26-004660,missed-bin,closed,Golborne,Whole street's Green bins left after collection,2026-09-16T18:22:00+00:00,2026-09-27T13:10:00+00:00,wigan-waste-missed-bin
+WGN-26-004671,garden-waste,closed,Golborne,Garden waste subscription: sticker not received,2026-09-17T18:39:00+00:00,2026-09-22T16:09:00+00:00,wigan-waste-garden
+WGN-26-004691,missed-bin,closed,Tyldesley,Brown bin missed again this week,2026-09-18T09:47:00+00:00,2026-10-06T15:37:00+00:00,wigan-waste-missed-bin
+WGN-26-004716,pothole,closed,Standish,Pothole on the junction causing cyclists to swerve,2026-09-19T08:27:00+00:00,2026-09-29T13:45:00+00:00,wigan-pothole
+WGN-26-004738,fly-tipping,closed,Standish,Household items left in the back alley,2026-09-20T19:35:00+00:00,2026-09-29T12:28:00+00:00,wigan-waste-fly-tipping
+WGN-26-004741,missed-bin,resolved,Atherton,Green bin missed again this week,2026-09-21T07:03:00+00:00,2026-10-09T12:18:00+00:00,wigan-waste-missed-bin
+WGN-26-004767,pothole,resolved,Wigan,Several potholes along the road after the frost,2026-09-21T16:53:00+00:00,2026-09-28T09:50:00+00:00,wigan-pothole
+WGN-26-004781,missed-bin,resolved,Ashton-in-Makerfield,Brown bin emptied but left in the road,2026-09-22T08:14:00+00:00,2026-09-24T15:55:00+00:00,wigan-waste-missed-bin
+WGN-26-004795,garden-waste,resolved,Shevington,Request for an additional garden waste bin,2026-09-23T11:02:00+00:00,2026-10-02T14:22:00+00:00,wigan-waste-garden
+WGN-26-004828,garden-waste,resolved,Shevington,Garden waste bin not collected,2026-09-23T18:39:00+00:00,2026-10-07T15:53:00+00:00,wigan-waste-garden
+WGN-26-004862,garden-waste,closed,Atherton,Garden waste bin not collected,2026-09-23T19:06:00+00:00,2026-10-06T12:47:00+00:00,wigan-waste-garden
+WGN-26-004898,missed-bin,scheduled,Atherton,Blue bin not emptied on the scheduled day,2026-09-25T08:17:00+00:00,2026-09-28T14:11:00+00:00,wigan-waste-missed-bin
+WGN-26-004910,pothole,closed,Wigan,Sunken drain cover in the carriageway,2026-09-25T16:21:00+00:00,2026-10-05T16:19:00+00:00,wigan-pothole
+WGN-26-004945,bulky-collection,closed,Shevington,Collection request: fridge freezer,2026-09-26T16:05:00+00:00,2026-10-07T16:30:00+00:00,wigan-waste-bulky
+WGN-26-004946,missed-bin,resolved,Orrell,Whole street's Blue bins left after collection,2026-09-27T13:00:00+00:00,2026-10-15T14:18:00+00:00,wigan-waste-missed-bin
+WGN-26-004977,missed-bin,resolved,Hindley,Black bin not emptied on the scheduled day,2026-09-27T16:30:00+00:00,2026-10-13T13:26:00+00:00,wigan-waste-missed-bin
+WGN-26-005009,pothole,resolved,Shevington,Sunken drain cover in the carriageway,2026-09-29T13:16:00+00:00,2026-10-07T16:03:00+00:00,wigan-pothole
+WGN-26-005017,pothole,resolved,Lowton,Sunken drain cover in the carriageway,2026-09-29T17:12:00+00:00,2026-10-13T13:59:00+00:00,wigan-pothole
+WGN-26-005045,missed-bin,resolved,Orrell,Green bin missed again this week,2026-09-30T12:35:00+00:00,2026-10-11T13:16:00+00:00,wigan-waste-missed-bin
+WGN-26-005081,missed-bin,closed,Hindley,Black bin missed again this week,2026-09-30T18:39:00+00:00,2026-10-03T11:31:00+00:00,wigan-waste-missed-bin
+WGN-26-005094,bulky-collection,resolved,Orrell,Booked bulky collection not picked up,2026-10-01T11:32:00+00:00,2026-10-12T10:03:00+00:00,wigan-waste-bulky
+WGN-26-005108,garden-waste,scheduled,Atherton,Garden waste bin not collected,2026-10-02T09:47:00+00:00,2026-10-04T13:18:00+00:00,wigan-waste-garden
+WGN-26-005124,missed-bin,resolved,Tyldesley,Brown bin missed again this week,2026-10-02T12:45:00+00:00,2026-10-23T15:56:00+00:00,wigan-waste-missed-bin
+WGN-26-005135,fly-tipping,resolved,Ashton-in-Makerfield,Bags of rubbish dumped on the footpath,2026-10-02T18:54:00+00:00,2026-10-17T15:12:00+00:00,wigan-waste-fly-tipping
+WGN-26-005160,blue-badge,resolved,Shevington,New Blue Badge application,2026-10-03T16:19:00+00:00,2026-10-19T09:08:00+00:00,wigan-blue-badge
+WGN-26-005197,blue-badge,resolved,Leigh,New Blue Badge application,2026-10-04T08:50:00+00:00,2026-10-17T14:57:00+00:00,wigan-blue-badge
+WGN-26-005232,bulky-collection,resolved,Tyldesley,Collection request: old sofa and armchair,2026-10-04T10:49:00+00:00,2026-10-18T10:31:00+00:00,wigan-waste-bulky
+WGN-26-005236,bulky-collection,resolved,Lowton,Collection request: mattress and bed frame,2026-10-04T11:06:00+00:00,2026-10-15T10:07:00+00:00,wigan-waste-bulky
+WGN-26-005238,missed-bin,closed,Leigh,Whole street's Black bins left after collection,2026-10-04T11:34:00+00:00,2026-10-19T09:48:00+00:00,wigan-waste-missed-bin
+WGN-26-005266,missed-bin,closed,Lowton,Green bin not emptied on the scheduled day,2026-10-04T16:26:00+00:00,2026-10-24T16:38:00+00:00,wigan-waste-missed-bin
+WGN-26-005297,missed-bin,resolved,Orrell,Green bin not emptied on the scheduled day,2026-10-04T16:42:00+00:00,2026-10-15T12:11:00+00:00,wigan-waste-missed-bin
+WGN-26-005326,missed-bin,in-progress,Golborne,Whole street's Green bins left after collection,2026-10-05T08:20:00+00:00,2026-10-10T12:49:00+00:00,wigan-waste-missed-bin
+WGN-26-005331,missed-bin,resolved,Tyldesley,Brown bin not emptied on the scheduled day,2026-10-06T12:43:00+00:00,2026-10-22T14:43:00+00:00,wigan-waste-missed-bin
+WGN-26-005350,missed-bin,resolved,Orrell,Black bin not emptied on the scheduled day,2026-10-06T15:01:00+00:00,2026-10-16T11:48:00+00:00,wigan-waste-missed-bin
+WGN-26-005385,missed-bin,closed,Ashton-in-Makerfield,Blue bin missed again this week,2026-10-07T18:59:00+00:00,2026-10-26T10:27:00+00:00,wigan-waste-missed-bin
+WGN-26-005393,parking-fine,resolved,Orrell,Penalty charge paid but reminder received,2026-10-08T08:02:00+00:00,2026-10-20T09:03:00+00:00,wigan-parking-fines
+WGN-26-005422,parking-permit,resolved,Golborne,Resident permit renewal not received,2026-10-08T09:31:00+00:00,2026-10-17T14:22:00+00:00,wigan-parking-permits
+WGN-26-005455,fly-tipping,resolved,Ashton-in-Makerfield,Tyres dumped near the playing field,2026-10-08T10:25:00+00:00,2026-10-09T16:45:00+00:00,wigan-waste-fly-tipping
+WGN-26-005471,garden-waste,resolved,Ince,Request for an additional garden waste bin,2026-10-08T10:50:00+00:00,2026-10-14T12:42:00+00:00,wigan-waste-garden
+WGN-26-005489,garden-waste,resolved,Hindley,Garden waste subscription: sticker not received,2026-10-09T12:24:00+00:00,2026-10-13T11:31:00+00:00,wigan-waste-garden
+WGN-26-005499,pothole,closed,Golborne,Several potholes along the road after the frost,2026-10-09T18:58:00+00:00,2026-10-12T10:42:00+00:00,wigan-pothole
+WGN-26-005531,missed-bin,closed,Atherton,Brown bin missed again this week,2026-10-10T07:54:00+00:00,2026-10-17T12:26:00+00:00,wigan-waste-missed-bin
+WGN-26-005543,fly-tipping,closed,Hindley,Tyres dumped near the playing field,2026-10-10T08:43:00+00:00,2026-10-31T11:23:00+00:00,wigan-waste-fly-tipping
+WGN-26-005578,pothole,scheduled,Tyldesley,Sunken drain cover in the carriageway,2026-10-10T19:32:00+00:00,2026-10-28T12:13:00+00:00,wigan-pothole
+WGN-26-005612,parking-fine,resolved,Tyldesley,Challenge to a penalty charge notice: valid permit displayed,2026-10-11T15:21:00+00:00,2026-10-27T13:15:00+00:00,wigan-parking-fines
+WGN-26-005625,garden-waste,closed,Ashton-in-Makerfield,Request for an additional garden waste bin,2026-10-13T10:10:00+00:00,2026-10-20T16:50:00+00:00,wigan-waste-garden
+WGN-26-005655,parking-fine,closed,Ince,Challenge to a penalty charge notice: valid permit displayed,2026-10-13T11:09:00+00:00,2026-10-25T12:50:00+00:00,wigan-parking-fines
+WGN-26-005672,parking-permit,resolved,Ashton-in-Makerfield,Change of vehicle on resident permit,2026-10-13T15:15:00+00:00,2026-11-02T14:47:00+00:00,wigan-parking-permits
+WGN-26-005692,missed-bin,resolved,Tyldesley,Green bin missed again this week,2026-10-16T07:53:00+00:00,2026-10-18T11:34:00+00:00,wigan-waste-missed-bin
+WGN-26-005717,garden-waste,resolved,Golborne,Garden waste subscription: sticker not received,2026-10-16T09:54:00+00:00,2026-10-17T10:24:00+00:00,wigan-waste-garden
+WGN-26-005731,fly-tipping,closed,Tyldesley,Household items left in the back alley,2026-10-16T11:26:00+00:00,2026-10-17T10:00:00+00:00,wigan-waste-fly-tipping
+WGN-26-005737,pothole,resolved,Leigh,Several potholes along the road after the frost,2026-10-16T12:09:00+00:00,2026-11-05T10:39:00+00:00,wigan-pothole
+WGN-26-005767,pothole,resolved,Tyldesley,Sunken drain cover in the carriageway,2026-10-16T13:24:00+00:00,2026-11-06T12:10:00+00:00,wigan-pothole
+WGN-26-005770,parking-permit,resolved,Shevington,Resident permit renewal not received,2026-10-17T18:52:00+00:00,2026-10-19T12:19:00+00:00,wigan-parking-permits
+WGN-26-005773,missed-bin,resolved,Ince,Blue bin not emptied on the scheduled day,2026-10-18T13:04:00+00:00,2026-11-08T11:42:00+00:00,wigan-waste-missed-bin
+WGN-26-005779,garden-waste,closed,Wigan,Garden waste bin not collected,2026-10-18T15:20:00+00:00,2026-11-04T12:05:00+00:00,wigan-waste-garden
+WGN-26-005797,garden-waste,resolved,Golborne,Garden waste subscription: sticker not received,2026-10-18T18:54:00+00:00,2026-10-24T16:09:00+00:00,wigan-waste-garden
+WGN-26-005806,missed-bin,resolved,Leigh,Brown bin not emptied on the scheduled day,2026-10-19T07:19:00+00:00,2026-10-27T09:06:00+00:00,wigan-waste-missed-bin
+WGN-26-005825,bulky-collection,in-progress,Leigh,Collection request: mattress and bed frame,2026-10-19T10:40:00+00:00,2026-10-30T12:42:00+00:00,wigan-waste-bulky
+WGN-26-005844,missed-bin,resolved,Shevington,Green bin emptied but left in the road,2026-10-19T13:17:00+00:00,2026-10-22T15:41:00+00:00,wigan-waste-missed-bin
+WGN-26-005869,parking-fine,closed,Ashton-in-Makerfield,Penalty charge paid but reminder received,2026-10-20T13:35:00+00:00,2026-10-24T15:19:00+00:00,wigan-parking-fines
+WGN-26-005876,fly-tipping,in-progress,Standish,Tyres dumped near the playing field,2026-10-21T11:52:00+00:00,2026-10-26T11:23:00+00:00,wigan-waste-fly-tipping
+WGN-26-005890,parking-fine,resolved,Lowton,Penalty charge paid but reminder received,2026-10-21T14:02:00+00:00,2026-11-09T10:32:00+00:00,wigan-parking-fines
+WGN-26-005914,blue-badge,resolved,Ince,New Blue Badge application,2026-10-21T18:30:00+00:00,2026-10-29T16:17:00+00:00,wigan-blue-badge
+WGN-26-005941,fly-tipping,scheduled,Hindley,Bags of rubbish dumped on the footpath,2026-10-21T19:29:00+00:00,2026-11-06T09:19:00+00:00,wigan-waste-fly-tipping
+WGN-26-005943,blue-badge,in-progress,Shevington,Blue Badge renewal,2026-10-22T17:04:00+00:00,2026-11-08T12:44:00+00:00,wigan-blue-badge
+WGN-26-005959,pothole,scheduled,Wigan,Several potholes along the road after the frost,2026-10-24T10:32:00+00:00,2026-11-08T11:12:00+00:00,wigan-pothole
+WGN-26-005975,garden-waste,in-progress,Lowton,Garden waste subscription: sticker not received,2026-10-24T19:51:00+00:00,2026-11-04T09:27:00+00:00,wigan-waste-garden
+WGN-26-005999,blue-badge,in-progress,Ince,Replacement for a lost Blue Badge,2026-10-25T15:21:00+00:00,2026-11-14T13:00:00+00:00,wigan-blue-badge
+WGN-26-006031,parking-fine,in-progress,Atherton,Penalty charge paid but reminder received,2026-10-25T16:21:00+00:00,2026-11-15T15:28:00+00:00,wigan-parking-fines
+WGN-26-006043,missed-bin,resolved,Ashton-in-Makerfield,Brown bin missed again this week,2026-10-25T16:25:00+00:00,2026-10-30T10:39:00+00:00,wigan-waste-missed-bin
+WGN-26-006073,bulky-collection,resolved,Shevington,Collection request: mattress and bed frame,2026-10-25T19:01:00+00:00,2026-11-09T09:13:00+00:00,wigan-waste-bulky
+WGN-26-006088,missed-bin,in-progress,Shevington,Whole street's Green bins left after collection,2026-10-26T07:08:00+00:00,2026-10-29T14:03:00+00:00,wigan-waste-missed-bin
+WGN-26-006091,missed-bin,resolved,Ashton-in-Makerfield,Brown bin not emptied on the scheduled day,2026-10-26T11:16:00+00:00,2026-10-30T13:33:00+00:00,wigan-waste-missed-bin
+WGN-26-006118,missed-bin,in-progress,Golborne,Blue bin missed again this week,2026-10-28T15:01:00+00:00,2026-10-31T13:18:00+00:00,wigan-waste-missed-bin
+WGN-26-006121,missed-bin,in-progress,Ince,Brown bin missed again this week,2026-10-28T18:28:00+00:00,2026-11-01T14:47:00+00:00,wigan-waste-missed-bin
+WGN-26-006128,garden-waste,in-progress,Shevington,Garden waste bin not collected,2026-10-29T07:17:00+00:00,2026-11-09T09:27:00+00:00,wigan-waste-garden
+WGN-26-006160,bulky-collection,in-progress,Golborne,Collection request: fridge freezer,2026-10-29T08:52:00+00:00,2026-11-01T10:11:00+00:00,wigan-waste-bulky
+WGN-26-006184,missed-bin,in-progress,Atherton,Whole street's Brown bins left after collection,2026-10-30T07:23:00+00:00,2026-11-18T11:11:00+00:00,wigan-waste-missed-bin
+WGN-26-006186,parking-fine,closed,Hindley,Penalty charge paid but reminder received,2026-10-30T07:33:00+00:00,2026-11-18T12:24:00+00:00,wigan-parking-fines
+WGN-26-006195,pothole,resolved,Golborne,Pothole on the junction causing cyclists to swerve,2026-10-31T08:04:00+00:00,2026-11-20T09:37:00+00:00,wigan-pothole
+WGN-26-006212,parking-fine,closed,Hindley,Challenge to a penalty charge notice: valid permit displayed,2026-10-31T16:06:00+00:00,2026-11-05T09:01:00+00:00,wigan-parking-fines
+WGN-26-006229,fly-tipping,in-progress,Standish,Household items left in the back alley,2026-11-01T08:23:00+00:00,2026-11-11T14:10:00+00:00,wigan-waste-fly-tipping
+WGN-26-006266,pothole,closed,Atherton,Several potholes along the road after the frost,2026-11-01T11:49:00+00:00,2026-11-18T13:31:00+00:00,wigan-pothole
+WGN-26-006297,missed-bin,resolved,Wigan,Whole street's Blue bins left after collection,2026-11-01T18:56:00+00:00,2026-11-10T10:05:00+00:00,wigan-waste-missed-bin
+WGN-26-006317,parking-fine,scheduled,Golborne,Challenge to a penalty charge notice: valid permit displayed,2026-11-02T07:30:00+00:00,2026-11-08T14:57:00+00:00,wigan-parking-fines
+WGN-26-006328,blue-badge,in-progress,Lowton,Replacement for a lost Blue Badge,2026-11-02T08:41:00+00:00,2026-11-15T09:56:00+00:00,wigan-blue-badge
+WGN-26-006345,missed-bin,resolved,Atherton,Whole street's Green bins left after collection,2026-11-02T09:33:00+00:00,2026-11-12T14:42:00+00:00,wigan-waste-missed-bin
+WGN-26-006371,missed-bin,in-progress,Golborne,Green bin emptied but left in the road,2026-11-02T15:22:00+00:00,2026-11-04T09:48:00+00:00,wigan-waste-missed-bin
+WGN-26-006391,missed-bin,received,Golborne,Blue bin not emptied on the scheduled day,2026-11-03T09:31:00+00:00,2026-11-03T09:31:00+00:00,wigan-waste-missed-bin
+WGN-26-006415,bulky-collection,in-progress,Ince,Collection request: fridge freezer,2026-11-03T12:02:00+00:00,2026-11-13T11:41:00+00:00,wigan-waste-bulky
+WGN-26-006445,missed-bin,scheduled,Atherton,Brown bin emptied but left in the road,2026-11-04T13:54:00+00:00,2026-11-12T10:11:00+00:00,wigan-waste-missed-bin
+WGN-26-006465,pothole,closed,Wigan,Sunken drain cover in the carriageway,2026-11-05T09:27:00+00:00,2026-11-15T16:11:00+00:00,wigan-pothole
+WGN-26-006478,pothole,received,Shevington,Sunken drain cover in the carriageway,2026-11-05T11:57:00+00:00,2026-11-05T11:57:00+00:00,wigan-pothole
+WGN-26-006507,fly-tipping,received,Shevington,Tyres dumped near the playing field,2026-11-06T12:51:00+00:00,2026-11-06T12:51:00+00:00,wigan-waste-fly-tipping
+WGN-26-006537,pothole,in-progress,Shevington,Several potholes along the road after the frost,2026-11-06T17:05:00+00:00,2026-11-18T16:51:00+00:00,wigan-pothole
+WGN-26-006557,missed-bin,in-progress,Wigan,Green bin emptied but left in the road,2026-11-06T19:26:00+00:00,2026-11-07T14:26:00+00:00,wigan-waste-missed-bin
+WGN-26-006592,parking-fine,closed,Wigan,Penalty charge paid but reminder received,2026-11-07T18:44:00+00:00,2026-11-18T14:15:00+00:00,wigan-parking-fines
+WGN-26-006604,parking-fine,closed,Hindley,Challenge to a penalty charge notice: signs unclear,2026-11-08T07:39:00+00:00,2026-11-17T16:41:00+00:00,wigan-parking-fines
+WGN-26-006638,pothole,scheduled,Shevington,Pothole on the junction causing cyclists to swerve,2026-11-08T08:46:00+00:00,2026-11-11T15:47:00+00:00,wigan-pothole
+WGN-26-006671,garden-waste,in-progress,Shevington,Garden waste bin not collected,2026-11-08T13:06:00+00:00,2026-11-17T10:32:00+00:00,wigan-waste-garden
+WGN-26-006694,fly-tipping,scheduled,Tyldesley,Builder's rubble left by the canal path,2026-11-08T13:48:00+00:00,2026-11-10T12:55:00+00:00,wigan-waste-fly-tipping
+WGN-26-006715,pothole,in-progress,Hindley,Several potholes along the road after the frost,2026-11-08T14:41:00+00:00,2026-11-11T09:02:00+00:00,wigan-pothole
+WGN-26-006720,bulky-collection,scheduled,Tyldesley,Collection request: fridge freezer,2026-11-08T15:48:00+00:00,2026-11-15T14:01:00+00:00,wigan-waste-bulky
+WGN-26-006732,garden-waste,received,Ince,Request for an additional garden waste bin,2026-11-09T07:37:00+00:00,2026-11-09T07:37:00+00:00,wigan-waste-garden
+WGN-26-006735,missed-bin,in-progress,Tyldesley,Green bin missed again this week,2026-11-09T10:11:00+00:00,2026-11-16T10:19:00+00:00,wigan-waste-missed-bin
+WGN-26-006748,garden-waste,scheduled,Golborne,Request for an additional garden waste bin,2026-11-10T07:17:00+00:00,2026-11-14T13:32:00+00:00,wigan-waste-garden
+WGN-26-006785,bulky-collection,in-progress,Golborne,Collection request: fridge freezer,2026-11-10T16:05:00+00:00,2026-11-14T12:09:00+00:00,wigan-waste-bulky
+WGN-26-006792,parking-permit,in-progress,Ince,Resident permit renewal not received,2026-11-10T19:31:00+00:00,2026-11-17T12:59:00+00:00,wigan-parking-permits
+WGN-26-006807,fly-tipping,in-progress,Atherton,Builder's rubble left by the canal path,2026-11-11T18:03:00+00:00,2026-11-17T15:25:00+00:00,wigan-waste-fly-tipping
+WGN-26-006820,pothole,in-progress,Standish,Deep pothole near the bus stop,2026-11-13T16:26:00+00:00,2026-11-17T15:22:00+00:00,wigan-pothole
+WGN-26-006846,pothole,in-progress,Atherton,Deep pothole near the bus stop,2026-11-14T08:02:00+00:00,2026-11-18T11:13:00+00:00,wigan-pothole
+WGN-26-006883,fly-tipping,received,Ashton-in-Makerfield,Bags of rubbish dumped on the footpath,2026-11-14T08:41:00+00:00,2026-11-14T08:41:00+00:00,wigan-waste-fly-tipping
+WGN-26-006913,missed-bin,received,Wigan,Brown bin emptied but left in the road,2026-11-15T11:13:00+00:00,2026-11-15T11:13:00+00:00,wigan-waste-missed-bin
+WGN-26-006923,pothole,received,Wigan,Pothole on the junction causing cyclists to swerve,2026-11-17T17:13:00+00:00,2026-11-17T17:13:00+00:00,wigan-pothole
+WGN-26-006951,blue-badge,received,Golborne,Replacement for a lost Blue Badge,2026-11-18T17:42:00+00:00,2026-11-18T17:42:00+00:00,wigan-blue-badge
+WGN-26-006952,missed-bin,scheduled,Lowton,Brown bin emptied but left in the road,2026-11-18T19:20:00+00:00,2026-11-19T16:23:00+00:00,wigan-waste-missed-bin
+WGN-26-006985,missed-bin,received,Leigh,Whole street's Brown bins left after collection,2026-11-20T13:21:00+00:00,2026-11-20T13:21:00+00:00,wigan-waste-missed-bin
+WGN-26-007007,missed-bin,in-progress,Leigh,Whole street's Blue bins left after collection,2026-11-20T16:17:00+00:00,2026-11-20T19:09:00+00:00,wigan-waste-missed-bin
