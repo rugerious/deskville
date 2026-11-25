@@ -108,7 +108,18 @@ jobs:
           docker push "${{ steps.repo.outputs.uri }}:$TAG" | tail -1
       - name: vulnerability scan (fail on CRITICAL)
         run: |
+          # Scan-on-push starts a little after the push: until then ECR answers
+          # "scan not found", which the waiter treats as a failure. Wait for it to exist.
+          for i in $(seq 1 30); do
+            status=$(aws ecr describe-images --repository-name "$REPO" --image-ids imageTag="$TAG" \
+                       --query 'imageDetails[0].imageScanStatus.status' --output text 2>/dev/null || echo None)
+            [ "$status" != "None" ] && break
+            echo "waiting for the scan to start ($i/30)"; sleep 10
+          done
           aws ecr wait image-scan-complete --repository-name "$REPO" --image-id imageTag="$TAG"
+          echo "HIGH findings, for the record:"
+          aws ecr describe-image-scan-findings --repository-name "$REPO" --image-id imageTag="$TAG" \
+            --query "imageScanFindings.findings[?severity=='HIGH'].[name, attributes[?key=='package_name'].value | [0]]" --output text || true
           aws ecr describe-image-scan-findings --repository-name "$REPO" --image-id imageTag="$TAG" \
             --query 'imageScanFindings.findingSeverityCounts' --output json | tee /tmp/counts.json
           crit=$(python3 -c "import json;print(json.load(open('/tmp/counts.json') or {}).get('CRITICAL',0))" 2>/dev/null || echo 0)
