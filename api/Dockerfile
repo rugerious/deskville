@@ -13,6 +13,13 @@ WORKDIR /app
 # (sslmode=verify-full), so a man-in-the-middle can't stand in for RDS.
 ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /app/rds-global-bundle.pem
 
+# Operating-system security fixes published since the base image was built
+# (the first scan found HIGH findings only in Debian packages: glibc, pam,
+# sqlite3, util-linux, zlib).
+RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt \
  && useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin deskville \
