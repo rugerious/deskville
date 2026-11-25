@@ -37,7 +37,7 @@ Layers are numbered in the order they are built.
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
-| 4 | Ingestion: chunking and embeddings, tenant stamped | 🟡 in progress | Storage isolation 18/18 ([output below](#storage-isolation-one-bucket-one-prefix-per-council)); 189 real embeddings cached ([below](#embeddings-computed-once-per-council-cached)); search tests next |
+| 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
@@ -160,6 +160,39 @@ run 3 (both)        TOTAL: 189 chunks, 0 Titan calls, 189 from cache, ~10 s
 
 All 189 embeddings cost about $0.0002. The slow part is not the quota but starting the AWS CLI twice per chunk; with the cache, that cost is paid once.
 
+### Search: each council finds only its own
+
+The chunks are loaded from the cache into PostgreSQL with no calls to Bedrock, each council written with its own tenant set. Residents' searches go through one function, `app.search_public`: public chunks only, row-level security applied to the caller, vector index with iterative scans on ([D31](docs/DECISIONS.md)). The suite below runs as the application role, logged in with an IAM token, on RDS on 25 Nov: six real resident questions per council, embedded by Titan once and cached.
+
+```
+ #  | council |   kind    | result | test                                                  | detail
+  1 | wigan   | isolation | PASS   | What goes in my brown bin?                            | top 5: all wigan-...
+  2 | wigan   | relevance | PASS   | What goes in my brown bin?                            | top-1: wigan-waste-collection-days (says brown bin = mixed recycling)
+ 13 | wigan   | canary    | PASS   | staff search finds its own canary, never bury's       | top-10: own canary chunks=2, bury canary chunks=0
+ 14 | wigan   | audience  | PASS   | resident search never returns internal chunks         | top-10 public rows=10, canary chunks=0
+ 15 | wigan   | hnsw      | PASS   | vector index forced, RLS after it: 10 of 10           | plan uses HNSW: t; iterative scan off: 3 of 10, on: 10 of 10
+ 17 | bury    | relevance | PASS   | What goes in my brown bin?                            | top-1: bury-waste-garden (says brown bin = garden)
+ 30 | bury    | hnsw      | PASS   | vector index forced, RLS after it: 10 of 10           | plan uses HNSW: t; iterative scan off: 7 of 10, on: 10 of 10
+
+   kind    | passed
+ audience  | 2/2
+ canary    | 2/2
+ hnsw      | 2/2
+ isolation | 12/12
+ relevance | 12/12
+NOTICE:  all isolation, canary, audience and hnsw checks passed
+```
+
+What it shows:
+
+- **Isolation:** for every question, all five results belong to the council asking.
+- **The bin-colour trap held with real embeddings:** the same question gets opposite, correct answers. In Wigan the brown bin is mixed recycling; in Bury it is garden and food waste.
+- **Canaries:** a staff-style search finds its own council's internal note and never the other's. A resident's search never returns an internal note at all, not even from their own council.
+- **The HNSW trap is real.** A vector index picks the nearest vectors first and row-level security filters them afterwards. With the index forced and iterative scans off, Wigan got 3 results of the 10 it asked for and Bury 7: not a leak, but silently missing answers. With iterative scans on (as `search_public` sets them), 10 of 10. On today's small table the planner avoids the index anyway; the test forces it, as a larger table would, and checks the plan really used it.
+- **Relevance** (top answer from the right document) is reported as a quality number, not a gate. The first real run said 11/12; the miss was the test's, not the model's: Bury's top answer came from its garden-waste page, which correctly says the brown bin takes garden and food waste. The check now judges what the answer says, and it can still fail: in the local test, a Wigan answer that said anything else about the brown bin was marked FAIL.
+
+The suite has also been seen failing: with row-level security switched off it reports isolation 0/12 and canary 0/2 and exits non-zero; the loader refuses to load at all in that state.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -175,7 +208,7 @@ Every apply is followed by a second plan that must report no changes.
 
 Some parts cost money by the hour (the database, later the load balancer and containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
 
-A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `lab down`. The session on 24 Nov took about 25 minutes from `up` to `down`.
+A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `ingest/load.py` → `ingest/search_test.py` → `lab down`. The session on 24 Nov took about 25 minutes from `up` to `down`.
 
 The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
 
@@ -197,7 +230,8 @@ db/
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
                 gen-service-requests.py, s3-isolation-test.sh
-ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache)
+ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
+                load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 docs/           decisions
 ```
 

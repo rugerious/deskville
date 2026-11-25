@@ -46,6 +46,8 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+      - name: mask the account ID in this public log
+        run: echo "::add-mask::$(aws sts get-caller-identity --query Account --output text)"
       - name: init
         run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
       - name: plan (up)

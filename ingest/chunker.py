@@ -76,6 +76,7 @@ def chunk_document(tenant, text):
                 "tenant": tenant,
                 "doc_id": meta["id"],
                 "chunk_index": len(chunks),
+                "title": title,
                 "heading": heading.strip(),
                 "text": text,
                 "sources": meta.get("sources", []),
