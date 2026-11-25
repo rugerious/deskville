@@ -1,0 +1,8 @@
+# Runtime dependencies, pinned to releases at least 14 days old on 25 Nov 2026.
+fastapi==0.162.4
+uvicorn==0.54.0
+psycopg[binary]==3.3.8
+psycopg-pool==3.3.3
+pyjwt[crypto]==2.15.1
+cryptography==50.0.2
+boto3==1.44.0
