@@ -4,6 +4,9 @@ name: api
 # pgvector with the project's own migrations and data. No AWS, no secrets:
 # tokens are signed with a key pair generated inside the test, and search uses
 # fake (word-hash) vectors instead of Bedrock.
+# Layer 5.2: after a merge to main, once the tests pass and after approval in the
+# 'production' environment, the image is built natively on an ARM runner, pushed
+# to ECR tagged with the commit, and its vulnerability scan must show no CRITICAL.
 
 on:
   pull_request:
@@ -11,6 +14,7 @@ on:
   push:
     branches: [main]
     paths: ["api/**", "db/**", "ingest/**", "content/**", ".github/workflows/api.yml"]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -62,3 +66,51 @@ jobs:
           DESKVILLE_TEST_DB: "host=localhost port=5432 dbname=deskville user=deskville_app"
           PGPASSWORD: ci-only-not-a-secret
         run: /tmp/venv/bin/python -m unittest -v tests.test_api
+
+  image:
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04-arm
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      AWS_REGION: eu-west-2
+      REPO: deskville-api
+    steps:
+      - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: mask the account ID in this public log
+        run: echo "::add-mask::$(aws sts get-caller-identity --query Account --output text)"
+      - name: registry exists (created by the foundation apply)
+        id: repo
+        run: |
+          uri=$(aws ecr describe-repositories --repository-names "$REPO" --query 'repositories[0].repositoryUri' --output text) \
+            || { echo "::error::ECR repository $REPO not found: approve and finish the terraform apply first, then re-run this job"; exit 1; }
+          echo "uri=$uri" >> "$GITHUB_OUTPUT"
+      - name: build (arm64, native)
+        working-directory: api
+        run: |
+          tag="${GITHUB_SHA::12}"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          docker build --pull -t "${{ steps.repo.outputs.uri }}:$tag" .
+          docker image inspect "${{ steps.repo.outputs.uri }}:$tag" --format 'architecture: {{.Architecture}}, size: {{.Size}} bytes, user: {{.Config.User}}'
+      - name: "push (tags are immutable, so a re-run finds it already there)"
+        run: |
+          if aws ecr describe-images --repository-name "$REPO" --image-ids imageTag="$TAG" >/dev/null 2>&1; then
+            echo "$REPO:$TAG already in ECR, not pushed again"; exit 0
+          fi
+          aws ecr get-login-password | docker login --username AWS --password-stdin "${{ steps.repo.outputs.uri }}" >/dev/null
+          docker push "${{ steps.repo.outputs.uri }}:$TAG" | tail -1
+      - name: vulnerability scan (fail on CRITICAL)
+        run: |
+          aws ecr wait image-scan-complete --repository-name "$REPO" --image-id imageTag="$TAG"
+          aws ecr describe-image-scan-findings --repository-name "$REPO" --image-id imageTag="$TAG" \
+            --query 'imageScanFindings.findingSeverityCounts' --output json | tee /tmp/counts.json
+          crit=$(python3 -c "import json;print(json.load(open('/tmp/counts.json') or {}).get('CRITICAL',0))" 2>/dev/null || echo 0)
+          echo "image $REPO:$TAG scanned: CRITICAL=$crit"
+          [ "$crit" = "0" ] || { echo "::error::$crit CRITICAL finding(s)"; exit 1; }

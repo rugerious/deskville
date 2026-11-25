@@ -1,0 +1,5 @@
+# Only the app and its requirements go into the image.
+*
+!requirements.txt
+!app/
+app/__pycache__/

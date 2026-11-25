@@ -23,3 +23,7 @@ output "ingest_role_arn" {
   description = "Assume with a session tag tenant=<council>"
   value       = aws_iam_role.ingest.arn
 }
+
+output "api_repository_name" {
+  value = aws_ecr_repository.api.name
+}
