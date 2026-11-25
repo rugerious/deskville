@@ -37,7 +37,7 @@ Layers are numbered in the order they are built.
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
-| 4 | Ingestion: chunking and embeddings, tenant stamped | 🟡 in progress | Storage isolation 18/18 ([output below](#storage-isolation-one-bucket-one-prefix-per-council)); embeddings next |
+| 4 | Ingestion: chunking and embeddings, tenant stamped | 🟡 in progress | Storage isolation 18/18 ([output below](#storage-isolation-one-bucket-one-prefix-per-council)); 189 real embeddings cached ([below](#embeddings-computed-once-per-council-cached)); search tests next |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
@@ -145,6 +145,21 @@ all storage isolation checks passed
 
 The bucket's name has a random suffix instead of the account ID, and CI masks the account ID: the logs of a public repository are public too.
 
+### Embeddings: computed once, per council, cached
+
+Each document is split by section (one resident question and its answer per chunk), and each chunk starts with the council and the document's title, so the same question in two councils never becomes the same text ([D30](docs/DECISIONS.md)). Embeddings come from Amazon Titan Text Embeddings V2 in London, 1024 dimensions, at most one request per second (the account's quota is 60 a minute). Every council runs in its own isolated session: it reads its documents from its own S3 prefix and writes its vectors to its own cache. The cache key is a hash of the model, the dimensions and the text, so unchanged text is never embedded twice, and the database can be rebuilt on any lab day without calling Bedrock.
+
+Three runs on 25 Nov:
+
+```
+run 1 (wigan only)  wigan: 96 chunks, 96 Titan calls, 5,778 tokens, 321 s
+run 2 (both)        wigan: 96 from cache, 0 calls, 4 s
+                    bury:  93 chunks, 93 Titan calls, 5,806 tokens, 309 s
+run 3 (both)        TOTAL: 189 chunks, 0 Titan calls, 189 from cache, ~10 s
+```
+
+All 189 embeddings cost about $0.0002. The slow part is not the quota but starting the AWS CLI twice per chunk; with the cache, that cost is paid once.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -182,6 +197,7 @@ db/
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
                 gen-service-requests.py, s3-isolation-test.sh
+ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache)
 docs/           decisions
 ```
 

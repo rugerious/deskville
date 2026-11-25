@@ -11,3 +11,6 @@ crash.log
 !*.tfvars.example
 backend.hcl
 .env
+
+# Python
+__pycache__/
