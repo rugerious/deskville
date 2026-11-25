@@ -13,3 +13,13 @@ output "private_subnet_ids" {
 output "availability_zones" {
   value = local.azs
 }
+
+output "content_bucket" {
+  description = "Content bucket (random suffix, no account ID)"
+  value       = aws_s3_bucket.content.bucket
+}
+
+output "ingest_role_arn" {
+  description = "Assume with a session tag tenant=<council>"
+  value       = aws_iam_role.ingest.arn
+}

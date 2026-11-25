@@ -6,6 +6,8 @@ name: terraform
 # Expensive stacks (database) are planned on PRs but switched on and off only by
 # the manual 'lab' workflow, never by a merge.
 # The bootstrap and ci stacks are applied from the laptop only and never run here.
+# Content (content/<tenant>/*.md) is copied to the content bucket after an approved
+# apply, so a document only reaches AWS through a reviewed and approved merge.
 
 on:
   pull_request:
@@ -18,6 +20,7 @@ on:
     branches: [main]
     paths:
       - "infra/foundation/**"
+      - "content/**"
       - ".github/workflows/terraform.yml"
       - ".terraform-version"
 
@@ -61,6 +64,8 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+      - name: mask the account ID in this public log
+        run: echo "::add-mask::$(aws sts get-caller-identity --query Account --output text)"
       - name: fmt
         run: terraform fmt -check -recursive
       - name: init
@@ -99,6 +104,8 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+      - name: mask the account ID in this public log
+        run: echo "::add-mask::$(aws sts get-caller-identity --query Account --output text)"
       - name: init
         run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
       - name: plan
@@ -107,3 +114,13 @@ jobs:
         run: terraform apply -no-color -lock-timeout=60s apply.tfplan
       - name: no drift after apply
         run: terraform plan -no-color -lock-timeout=60s -detailed-exitcode
+      - name: sync content to S3 (one prefix per council)
+        if: matrix.stack == 'foundation'
+        run: |
+          bucket="$(terraform output -raw content_bucket)"
+          for dir in "$GITHUB_WORKSPACE"/content/*/; do
+            tenant="$(basename "$dir")"
+            aws s3 sync "$dir" "s3://$bucket/$tenant/docs/" --delete \
+              --exclude "*" --include "*.md" --only-show-errors
+            echo "$tenant: $(aws s3 ls "s3://$bucket/$tenant/docs/" | wc -l) documents in S3"
+          done
