@@ -1,5 +1,5 @@
 # Runtime dependencies, pinned to releases at least 14 days old on 25 Nov 2026.
-fastapi==0.162.4
+fastapi==0.165.0
 uvicorn==0.54.0
 psycopg[binary]==3.3.8
 psycopg-pool==3.3.3
