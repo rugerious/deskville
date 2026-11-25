@@ -1,0 +1,64 @@
+name: api
+
+# Layer 5.1: the API's security tests on every PR, against a real PostgreSQL +
+# pgvector with the project's own migrations and data. No AWS, no secrets:
+# tokens are signed with a key pair generated inside the test, and search uses
+# fake (word-hash) vectors instead of Bedrock.
+
+on:
+  pull_request:
+    paths: ["api/**", "db/**", "ingest/**", "content/**", ".github/workflows/api.yml"]
+  push:
+    branches: [main]
+    paths: ["api/**", "db/**", "ingest/**", "content/**", ".github/workflows/api.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.2-pg18
+        env:
+          POSTGRES_USER: deskville_admin
+          POSTGRES_PASSWORD: ci-only-not-a-secret
+          POSTGRES_DB: deskville
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U deskville_admin -d deskville"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGDATABASE: deskville
+    steps:
+      - uses: actions/checkout@v7
+      - name: psql wrapper (admin) for the project's scripts
+        run: |
+          printf '#!/bin/sh\nPGUSER=deskville_admin PGPASSWORD=ci-only-not-a-secret exec psql "$@"\n' > /tmp/psql-admin
+          chmod +x /tmp/psql-admin
+      - name: schema (migrations 001-005, as on RDS)
+        run: |
+          /tmp/psql-admin -X -q -v ON_ERROR_STOP=1 -c "CREATE ROLE rds_iam"
+          for m in db/migrations/*.sql; do
+            /tmp/psql-admin -X -q -v ON_ERROR_STOP=1 --single-transaction -f "$m" && echo "apply $(basename "$m")"
+          done
+          # CI only: on RDS deskville_app has no password (IAM tokens only).
+          /tmp/psql-admin -X -q -c "ALTER ROLE deskville_app PASSWORD 'ci-only-not-a-secret'"
+      - name: data (service requests + chunks with fake vectors)
+        env:
+          PSQL: /tmp/psql-admin
+          DESKVILLE_PSQL: /tmp/psql-admin
+        run: |
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install -q -r api/requirements-dev.txt
+          scripts/db-seed-requests.sh
+          /tmp/venv/bin/python api/tests/load_fake.py
+      - name: API security tests
+        working-directory: api
+        env:
+          DESKVILLE_TEST_DB: "host=localhost port=5432 dbname=deskville user=deskville_app"
+          PGPASSWORD: ci-only-not-a-secret
+        run: /tmp/venv/bin/python -m unittest -v tests.test_api

@@ -38,7 +38,7 @@ Layers are numbered in the order they are built.
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
-| 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
+| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); containers next |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
@@ -193,6 +193,30 @@ What it shows:
 
 The suite has also been seen failing: with row-level security switched off it reports isolation 0/12 and canary 0/2 and exits non-zero; the loader refuses to load at all in that state.
 
+### API: the council comes from the token
+
+Layer 5 starts with the rule everything else depends on: **the council is read from the signed login token, and from nothing the caller can choose.** The API verifies every token itself (signature against Cognito's public keys, issuer, audience, expiry, token type) before it reads the council and sets it for that one database transaction ([D34](docs/DECISIONS.md)). It runs on every pull request against PostgreSQL with pgvector, the project's own migrations and data, and tokens signed by a key pair the test generates:
+
+```
+test_02  Wigan token gets only Wigan                                ok
+test_03  Bury token gets only Bury                                  ok
+test_06  token signed by another key            -> 401              ok
+test_07  "alg": "none"                          -> 401              ok
+test_08  HS256 signed with the public key       -> 401              ok
+test_09  payload edited to say Bury             -> 401              ok
+test_10  expired / 11 wrong issuer / 12 wrong audience -> 401       ok
+test_13  access token instead of ID token       -> 401              ok
+test_15  no council in token / 16 unknown council -> 403            ok
+test_17  ?tenant=bury with a Wigan token        -> still Wigan      ok
+test_18  X-Tenant / X-Forwarded-Host: bury      -> still Wigan      ok
+test_19  Wigan token on bury.deskville.co.uk    -> 403              ok
+test_21  Bury's reference asked by Wigan        -> same 404 as a reference that doesn't exist   ok
+test_22  one pooled connection, councils alternating 10 times: no carry-over   ok
+Ran 22 tests: OK
+```
+
+The tests have been seen failing: with signature verification switched off, 7 fail; with the council read from `?tenant=`, test 17 fails.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -232,6 +256,7 @@ scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 gen-service-requests.py, s3-isolation-test.sh
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
+api/            FastAPI service (council from the verified token only) and its security tests
 docs/           decisions
 ```
 
