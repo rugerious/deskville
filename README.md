@@ -38,7 +38,7 @@ Layers are numbered in the order they are built.
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
-| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); containers next |
+| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); image built for ARM and scanned, 0 critical ([below](#container-image-built-for-arm-scanned-before-use)); login and containers next |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
@@ -216,6 +216,18 @@ Ran 22 tests: OK
 ```
 
 The tests have been seen failing: with signature verification switched off, 7 fail; with the council read from `?tenant=`, test 17 fails.
+
+### Container image: built for ARM, scanned before use
+
+After a merge, once the API's tests pass and after approval, the image is built natively on an ARM runner (no emulation, for Graviton), pushed to ECR tagged with the commit, and scanned. Tags are immutable: a tag always means the same image. A critical finding fails the job ([D36](docs/DECISIONS.md)).
+
+```
+architecture: arm64, size: 233138896 bytes, user: 10001
+image deskville-api:8950f39f48e0 scanned: CRITICAL=0
+{ "HIGH": 9, "MEDIUM": 13, "LOW": 5, "UNDEFINED": 1 }
+```
+
+The nine high findings are all in Debian packages of the base image (glibc, pam, sqlite3, util-linux, zlib), none in the API's own dependencies, and none with a published fix yet: the build applies Debian's security updates, so they go as soon as fixes exist. They are listed in every build's log rather than hidden. The first build also taught the pipeline something: scanning starts a few seconds after the push, and asking for the result too early fails, so the job now waits for the scan to exist.
 
 ## How changes reach AWS
 

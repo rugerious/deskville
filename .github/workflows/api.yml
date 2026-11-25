@@ -109,12 +109,17 @@ jobs:
       - name: vulnerability scan (fail on CRITICAL)
         run: |
           # Scan-on-push starts a little after the push: until then ECR answers
-          # "scan not found", which the waiter treats as a failure. Wait for it to exist.
+          # "scan not found", which the waiter treats as a failure. Ask the findings
+          # call itself and wait only while it says exactly that (describe-images
+          # does not report the scan status in this account: found on 25 Nov).
           for i in $(seq 1 30); do
-            status=$(aws ecr describe-images --repository-name "$REPO" --image-ids imageTag="$TAG" \
-                       --query 'imageDetails[0].imageScanStatus.status' --output text 2>/dev/null || echo None)
-            [ "$status" != "None" ] && break
-            echo "waiting for the scan to start ($i/30)"; sleep 10
+            if aws ecr describe-image-scan-findings --repository-name "$REPO" --image-id imageTag="$TAG" >/dev/null 2>/tmp/scan.err; then
+              break
+            elif grep -q ScanNotFoundException /tmp/scan.err; then
+              echo "waiting for the scan to start ($i/30)"; sleep 10
+            else
+              cat /tmp/scan.err; exit 1
+            fi
           done
           aws ecr wait image-scan-complete --repository-name "$REPO" --image-id imageTag="$TAG"
           echo "HIGH findings, for the record:"
