@@ -27,3 +27,11 @@ output "ingest_role_arn" {
 output "api_repository_name" {
   value = aws_ecr_repository.api.name
 }
+
+output "cognito_user_pool_id" {
+  value = aws_cognito_user_pool.residents.id
+}
+
+output "cognito_app_client_id" {
+  value = aws_cognito_user_pool_client.web.id
+}
