@@ -14,3 +14,6 @@ backend.hcl
 
 # Python
 __pycache__/
+
+# API virtualenv (cognito-test.sh)
+api/.venv/
