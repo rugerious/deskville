@@ -38,7 +38,7 @@ Layers are numbered in the order they are built.
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
-| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); image built for ARM and scanned, 0 critical ([below](#container-image-built-for-arm-scanned-before-use)); login and containers next |
+| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); image built for ARM and scanned, 0 critical ([below](#container-image-built-for-arm-scanned-before-use)); sign-in on the real Cognito pool 5/5 ([below](#sign-in-a-resident-cannot-change-their-council)); containers next |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
@@ -229,6 +229,21 @@ image deskville-api:8950f39f48e0 scanned: CRITICAL=0
 
 The nine high findings are all in Debian packages of the base image (glibc, pam, sqlite3, util-linux, zlib), none in the API's own dependencies, and none with a published fix yet: the build applies Debian's security updates, so they go as soon as fixes exist. They are listed in every build's log rather than hidden. The first build also taught the pipeline something: scanning starts a few seconds after the push, and asking for the result too early fails, so the job now waits for the scan to exist.
 
+### Sign-in: a resident cannot change their council
+
+One Cognito user pool for every council. Accounts are created only by an administrator, and that is where a resident's council is set; the app the residents use can read their council but is not allowed to write it ([D37](docs/DECISIONS.md)). Run from the laptop against the real pool on 25 Nov, using the API's own token check and Cognito's real public keys:
+
+```
+PASS  wigan: signs in; the API's verifier reads its council      council=wigan
+PASS  wigan: cannot change own council to bury                   refused; still wigan
+PASS  bury: signs in; the API's verifier reads its council       council=bury
+PASS  bury: cannot change own council to wigan                   refused; still bury
+PASS  forged token (Cognito's key id, my own key) refused        refused 401: InvalidSignatureError
+all Cognito checks passed
+```
+
+The test residents are synthetic; their passwords are generated and kept in SSM Parameter Store, never printed.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -265,7 +280,8 @@ db/
   tests/        isolation suite (runs as the application role, with an IAM token)
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
-                gen-service-requests.py, s3-isolation-test.sh
+                gen-service-requests.py, s3-isolation-test.sh,
+                cognito-users.sh, cognito-test.sh
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 api/            FastAPI service (council from the verified token only) and its security tests
