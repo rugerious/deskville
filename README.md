@@ -37,7 +37,7 @@ Layers are numbered in the order they are built.
 | 1 | CI/CD: GitHub Actions with OIDC, approved applies | ✅ 23 Nov 2026 | [#2](https://github.com/rugerious/deskville/pull/2): first run approved, apply 0 added / 0 changed / 0 destroyed, drift check clean |
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
-| 4 | Ingestion: chunking and embeddings, tenant stamped | ⏳ | |
+| 4 | Ingestion: chunking and embeddings, tenant stamped | 🟡 in progress | Storage isolation 18/18 ([output below](#storage-isolation-one-bucket-one-prefix-per-council)); embeddings next |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ⏳ | |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
@@ -118,6 +118,33 @@ Loaded on RDS on 24 Nov (migration 003, then the loader), and read back **as the
 
 The same session re-ran the isolation suite: 12/12 PASS. Two things found on the way, before any money was spent ([D26](docs/DECISIONS.md)): PostgreSQL refuses `COPY` into a table with row-level security, so the loader goes through a temporary table and `INSERT ... SELECT`, checked row by row; and RLS guarantees *where* a row lands, not that it was the right file, so the loader also checks every reference against its council's format and rolls back on a mismatch.
 
+### Storage isolation: one bucket, one prefix per council
+
+Layer 4 starts with where the documents live. Git stays the source of truth; after an approved merge, CI copies each council's documents to its own prefix in one S3 bucket (`wigan/docs/`, `bury/docs/`), and embeddings already computed are cached under `<council>/cache/`. The ingestion role can only be assumed with a session tag naming a known council, and a single attribute-based policy limits it to `${aws:PrincipalTag/tenant}/...`. That is a second isolation layer, before the database's row-level security ever sees a row ([D28](docs/DECISIONS.md)).
+
+Run from the laptop against the real bucket on 25 Nov. A check only counts as "denied" when AWS itself refused (AccessDenied or 403); any other error is a failure, so a test can't pass by never reaching AWS. That rule was added after the first run, where four write checks "passed" because the CLI rejected a parameter before sending anything:
+
+```
+== who may assume the role
+PASS  assume with tenant='<none>'                      refused
+PASS  assume with tenant='leeds'                       refused
+== session tenant=wigan
+PASS  wigan reads its own document                     ok
+PASS  wigan lists its own prefix                       ok
+PASS  wigan writes to its own cache                    ok
+PASS  wigan cannot read bury's document                denied
+PASS  wigan cannot list bury's prefix                  denied
+PASS  wigan cannot list the whole bucket               denied
+PASS  wigan cannot write to bury's cache               denied
+PASS  wigan cannot write its own docs                  denied
+== session tenant=bury
+  (the same eight checks, mirrored: 8 PASS)
+
+all storage isolation checks passed
+```
+
+The bucket's name has a random suffix instead of the account ID, and CI masks the account ID: the logs of a public repository are public too.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -145,7 +172,7 @@ The two CI roles and the boundary live in `infra/ci/`, which is applied from a l
 infra/
   bootstrap/    S3 bucket for Terraform state (run once, local state)
   ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
-  foundation/   VPC, subnets, gateway endpoints, budget
+  foundation/   VPC, subnets, gateway endpoints, budget, content bucket + ingest role
   database/     PostgreSQL on RDS + SSM-only bastion (switched by the lab workflow)
 content/        council documents (own words, sources linked), inventory, canaries
 db/
@@ -154,7 +181,7 @@ db/
   tests/        isolation suite (runs as the application role, with an IAM token)
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
-                gen-service-requests.py
+                gen-service-requests.py, s3-isolation-test.sh
 docs/           decisions
 ```
 
