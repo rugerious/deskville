@@ -39,7 +39,7 @@ Layers are numbered in the order they are built.
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ✅ 26 Nov 2026 | [#24](https://github.com/rugerious/deskville/pull/24) [#25](https://github.com/rugerious/deskville/pull/25) [#29](https://github.com/rugerious/deskville/pull/29) [#30](https://github.com/rugerious/deskville/pull/30) [#31](https://github.com/rugerious/deskville/pull/31) [#33](https://github.com/rugerious/deskville/pull/33) [#34](https://github.com/rugerious/deskville/pull/34) [#35](https://github.com/rugerious/deskville/pull/35): against the real address, 18/18 incl. forged tokens and a container stopped mid-traffic: 237 requests, 0 failed ([output below](#on-the-internet-proven-from-outside)) |
-| 6 | Assistant: retrieval, tools, Guardrails | 🟡 in progress | Nova Lite answers in London (334 ms); 28 resident questions written before the assistant ([#37](https://github.com/rugerious/deskville/pull/37)); `/ask` gives the model only the token's council ([#38](https://github.com/rugerious/deskville/pull/38)); a request-lookup tool that can't be told a council ([#39](https://github.com/rugerious/deskville/pull/39)); a guardrail measured 19/19 before use, then on both sides of the model ([#40](https://github.com/rugerious/deskville/pull/40)); 15 new tests ([below](#assistant-the-model-only-sees-its-own-council)); accuracy run next |
+| 6 | Assistant: retrieval, tools, Guardrails | ✅ 26 Nov 2026 | [#37](https://github.com/rugerious/deskville/pull/37) [#38](https://github.com/rugerious/deskville/pull/38) [#39](https://github.com/rugerious/deskville/pull/39) [#40](https://github.com/rugerious/deskville/pull/40) [#41](https://github.com/rugerious/deskville/pull/41) [#42](https://github.com/rugerious/deskville/pull/42): first accuracy run through the real API: 20/28 delivered, every factual answer generated correctly (24/24), 0 wrong facts and 0 other-council facts delivered; the 8 misses were correct answers held back by the grounding check ([below](#first-accuracy-run)) |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
 
@@ -352,6 +352,35 @@ Ran 37 tests: OK
 
 Seen failing: with the question check removed, tests 34 and 37 fail; with the answer checked against only the first chunk, test 35 fails.
 
+### First accuracy run
+
+The 28 questions written before the assistant existed, asked through `https://api.deskville.co.uk/ask` by each council's test resident with a real token, in a lab session on 26 Nov ([full results](eval/results/2026-11-26.md)):
+
+| | |
+|---|---|
+| Delivered to residents | **20 / 28** |
+| Factual answers the model generated correctly | **24 / 24** (16 delivered, 8 held back) |
+| Wrong facts delivered | **0** |
+| Answers with the other council's facts | **0** |
+| Declines (the other council's number, a plumber) | 4 / 4 |
+
+Every miss was the same thing, and in all eight the expected document had been retrieved: the answer check's grounding score (0.33 to 0.63) under its 0.7 threshold. Were those answers wrong, or was the check too strict? `eval/diagnose.py` regenerated them with the same chunks and printed what was held back:
+
+```
+== w05  How much is a bulky waste collection?
+   expected doc retrieved: True   scores: {'grounding': 0.65, 'relevance': 1.0}   facts: RIGHT
+   raw answer: Every property gets two free bulky waste collections a year. Extra collections cost £27 for up to five items [1].
+== b05  How much is a bulky waste collection?
+   expected doc retrieved: True   scores: {'grounding': 0.28, 'relevance': 1.0}   facts: RIGHT
+   raw answer: A bulky waste collection in Bury costs £49 for up to five items [1].
+== w12  What's the closing date for primary school applications for September 2027?
+   expected doc retrieved: True   scores: {'grounding': 0.25, 'relevance': 1.0}   facts: RIGHT
+   raw answer: The closing date for primary school applications for September 2027 is 15 January 2027 [3].
+   ... 8 of 8 RIGHT
+```
+
+All eight were right, and the same answers scored differently minutes apart (w03: 0.42, then 0.77). So the assistant fails safe, but too often. The threshold is not lowered to turn these eight green: that would tune the check to the questions that measure it. Recalibrating it is the next task, judged on new questions ([D45](docs/DECISIONS.md)). The same session re-ran the API proof on the new image: 233 requests, 0 failed, with a task stopped mid-traffic.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -367,7 +396,7 @@ Every apply is followed by a second plan that must report no changes.
 
 Some parts cost money by the hour (the database, the load balancer and the containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
 
-A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `ingest/load.py` → `ingest/search_test.py` → `api-proof.py` → `lab down`. The session on 26 Nov, with the API, took about 36 minutes from `up` to `down`.
+A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `ingest/load.py` → `ingest/search_test.py` → `eval/run.py` → `api-proof.py` → `lab down`. The session on 26 Nov, with the API, took about 36 minutes from `up` to `down`.
 
 The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
 
@@ -394,7 +423,7 @@ scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 api/            FastAPI service (council from the verified token only), /ask with Nova Lite, security tests
-eval/           resident questions for the accuracy run, and a checker for the set itself
+eval/           resident questions, a checker for the set, the accuracy run, its diagnosis, results/
 docs/           decisions
 ```
 
