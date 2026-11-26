@@ -39,7 +39,7 @@ Layers are numbered in the order they are built.
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ✅ 26 Nov 2026 | [#24](https://github.com/rugerious/deskville/pull/24) [#25](https://github.com/rugerious/deskville/pull/25) [#29](https://github.com/rugerious/deskville/pull/29) [#30](https://github.com/rugerious/deskville/pull/30) [#31](https://github.com/rugerious/deskville/pull/31) [#33](https://github.com/rugerious/deskville/pull/33) [#34](https://github.com/rugerious/deskville/pull/34) [#35](https://github.com/rugerious/deskville/pull/35): against the real address, 18/18 incl. forged tokens and a container stopped mid-traffic: 237 requests, 0 failed ([output below](#on-the-internet-proven-from-outside)) |
-| 6 | Assistant: retrieval, tools, Guardrails | 🟡 in progress | Nova Lite answers in London (334 ms); 28 resident questions written before the assistant ([#37](https://github.com/rugerious/deskville/pull/37)); `/ask` gives the model only the token's council, 6 new tests ([below](#assistant-the-model-only-sees-its-own-council)) |
+| 6 | Assistant: retrieval, tools, Guardrails | 🟡 in progress | Nova Lite answers in London (334 ms); 28 resident questions written before the assistant ([#37](https://github.com/rugerious/deskville/pull/37)); `/ask` gives the model only the token's council; a request-lookup tool that can't be told a council; 11 new tests ([below](#assistant-the-model-only-sees-its-own-council)) |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
 
@@ -294,6 +294,32 @@ Ran 28 tests: OK
 
 Seen failing: with the council read from `?tenant=` and two Bury chunks added to a Wigan question, tests 23 and 26 fail.
 
+The assistant can also look up a resident's service request. The model may call one tool, `get_service_request`, which takes a reference and nothing else; the council is fixed by the code from the token ([D42](docs/DECISIONS.md)). The model chooses *when* to look, never *where*:
+
+```
+test_29  Wigan asks about WGN-26-006985 -> found, its real status in the answer            ok
+test_30  Wigan asks about BRY/2026/07376 -> {"found": false}, same as a missing reference   ok
+         (Bury asking the same reference -> found)
+test_31  the tool's only input is "reference"                                              ok
+test_32  junk and SQL-shaped references -> not found, nothing else                         ok
+test_33  the model's <thinking> never reaches a resident                                   ok
+Ran 33 tests: OK
+```
+
+Seen failing: with the lookup following the council written in the reference instead of the token, test 30 fails.
+
+The fake model can't prove the real tool loop, so `scripts/nova-tool-smoke.py` runs it against Nova Lite from the laptop. Its first run passed and found something the fake never would: with tools on, Nova writes its reasoning in `<thinking>` tags. Those are now removed before an answer leaves the API (test 33):
+
+```
+PASS  What's happening with my request WGN-26-006985?
+      tool asked for: ['WGN-26-006985']   tokens 1511+128   1282 ms
+      answer: Your request WGN-26-006985 for a missed bin in Pemberton is currently in progress. ...
+PASS  Any news on BRY/2026/07376?
+      tool asked for: ['BRY/2026/07376']   tokens 1437+148   1231 ms
+PASS  When can I report a missed bin?
+      tool asked for: []   tokens 648+69   539 ms
+```
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -331,7 +357,7 @@ db/
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
                 gen-service-requests.py, s3-isolation-test.sh,
-                cognito-users.sh, cognito-test.sh, api-proof.py
+                cognito-users.sh, cognito-test.sh, api-proof.py, nova-tool-smoke.py
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 api/            FastAPI service (council from the verified token only), /ask with Nova Lite, security tests

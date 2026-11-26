@@ -21,7 +21,7 @@ from app.auth import TokenVerifier
 from app.config import Settings
 from app.db import make_pool
 from app.embed import FakeEmbedder
-from app.generate import FakeGenerator
+from app.generate import TOOL, FakeGenerator, resident_text
 from app.main import create_app
 
 ISSUER = "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_TEST"
@@ -239,6 +239,47 @@ class Api(unittest.TestCase):
         self.ask(auth(token("bury")), question="missed bin escalation internal code")
         texts = " ".join(c["text"] for call in self.gen.calls[-2:] for c in call["chunks"])
         self.assertNotIn("CANARY-", texts)
+
+    # --- the tool (6.3): the model names a reference, the token names the council -----------
+    def test_29_own_request_through_the_assistant(self):
+        r = self.ask(auth(token("wigan")), question="What's happening with WGN-26-006985?")
+        self.assertEqual(r.status_code, 200, r.text)
+        seen = self.gen.calls[-1]["tools"]
+        self.assertEqual(len(seen), 1)
+        self.assertTrue(seen[0]["found"])
+        self.assertEqual(seen[0]["reference"], "WGN-26-006985")
+        self.assertIn(seen[0]["status"], r.json()["answer"])
+        self.assertEqual(r.json()["tools"], [{"name": "get_service_request", "reference": "WGN-26-006985", "found": True}])
+
+    def test_30_other_councils_reference_through_the_assistant(self):
+        r = self.ask(auth(token("wigan")), question="Any news on BRY/2026/07376 and BRY/2099/99999?")
+        self.assertEqual(r.status_code, 200, r.text)
+        real, missing = self.gen.calls[-1]["tools"]
+        self.assertEqual(real, {"reference": "BRY/2026/07376", "found": False})
+        self.assertEqual(set(real), set(missing))  # same shape as a reference that doesn't exist
+        own = self.ask(auth(token("bury")), question="Any news on BRY/2026/07376?")
+        self.assertTrue(self.gen.calls[-1]["tools"][0]["found"], own.text)
+
+    def test_31_the_tool_cannot_be_told_a_council(self):
+        props = TOOL["toolSpec"]["inputSchema"]["json"]["properties"]
+        self.assertEqual(set(props), {"reference"})
+
+    def test_32_junk_references_are_just_not_found(self):
+        for ref in ("x" * 500, "' OR 1=1 --", "WGN-26-006985' OR '1'='1"):
+            r = self.client.get("/requests/" + ref, headers=auth(token("wigan")))
+            self.assertEqual(r.status_code, 404, ref)
+        self.ask(auth(token("wigan")), question="status of WGN-26-000000 please")
+        self.assertEqual(self.gen.calls[-1]["tools"], [{"reference": "WGN-26-000000", "found": False}])
+
+
+class ResidentText(unittest.TestCase):
+    # Real Nova output from the 6.3 smoke test: reasoning tags must never reach a resident.
+    def test_33_model_reasoning_is_removed(self):
+        raw = ("<thinking>The tool has returned that no request was found.</thinking>\n\n"
+               "<response>No request with the reference BRY/2026/07376 was found. [1]</response>")
+        self.assertEqual(resident_text(raw), "No request with the reference BRY/2026/07376 was found. [1]")
+        self.assertEqual(resident_text("<thinking>never closed"), "")
+        self.assertEqual(resident_text("Plain answer [1]"), "Plain answer [1]")
 
 
 if __name__ == "__main__":
