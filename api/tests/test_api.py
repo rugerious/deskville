@@ -21,6 +21,7 @@ from app.auth import TokenVerifier
 from app.config import Settings
 from app.db import make_pool
 from app.embed import FakeEmbedder
+from app.generate import FakeGenerator
 from app.main import create_app
 
 ISSUER = "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_TEST"
@@ -69,7 +70,8 @@ class Api(unittest.TestCase):
         # leaked from one request into the next would show up here.
         cls.pool = make_pool(settings, min_size=1, max_size=1)
         verifier = TokenVerifier(ISSUER, CLIENT, settings.tenants, FakeKeys())
-        cls.client = TestClient(create_app(settings, verifier, FakeEmbedder(), cls.pool))
+        cls.gen = FakeGenerator()
+        cls.client = TestClient(create_app(settings, verifier, FakeEmbedder(), cls.pool, cls.gen))
 
     @classmethod
     def tearDownClass(cls):
@@ -194,6 +196,49 @@ class Api(unittest.TestCase):
             for c in ("wigan", "bury"):
                 ids = [x["doc_id"] for x in self.search(auth(token(c))).json()["results"]]
                 self.assertTrue(ids and all(i.startswith(c + "-") for i in ids), (c, ids))
+
+    # --- the assistant (6.2): the model only sees the token's council -------------------
+    def ask(self, headers, question="What goes in my brown bin?", **params):
+        return self.client.post("/ask", json={"question": question}, params=params, headers=headers)
+
+    def test_23_ask_wigan_sees_only_wigan(self):
+        r = self.ask(auth(token("wigan")))
+        self.assertEqual(r.status_code, 200, r.text)
+        seen = [c["doc_id"] for c in self.gen.calls[-1]["chunks"]]
+        self.assertTrue(seen and all(i.startswith("wigan-") for i in seen), seen)
+        self.assertEqual([s["doc_id"] for s in r.json()["sources"]], seen)
+        self.assertIn("Wigan Council", self.gen.calls[-1]["system"])
+        self.assertNotIn("Bury", self.gen.calls[-1]["system"])
+
+    def test_24_ask_bury_sees_only_bury(self):
+        r = self.ask(auth(token("bury")))
+        self.assertEqual(r.status_code, 200, r.text)
+        seen = [c["doc_id"] for c in self.gen.calls[-1]["chunks"]]
+        self.assertTrue(seen and all(i.startswith("bury-") for i in seen), seen)
+        self.assertIn("Bury Council", self.gen.calls[-1]["system"])
+
+    def test_25_ask_without_token_never_reaches_the_model(self):
+        before = len(self.gen.calls)
+        self.assertEqual(self.ask({}).status_code, 401)
+        self.assertEqual(self.ask(auth(token("wigan", key=ATTACKER))).status_code, 401)
+        self.assertEqual(len(self.gen.calls), before)
+
+    def test_26_ask_tenant_parameter_ignored(self):
+        r = self.ask(auth(token("wigan")), tenant="bury", council="bury")
+        self.assertEqual(r.json()["council"], "wigan")
+        self.assertTrue(all(c["doc_id"].startswith("wigan-") for c in self.gen.calls[-1]["chunks"]))
+
+    def test_27_ask_too_long_or_empty_refused_before_the_model(self):
+        before = len(self.gen.calls)
+        self.assertEqual(self.ask(auth(token("wigan")), question="x" * 501).status_code, 422)
+        self.assertEqual(self.ask(auth(token("wigan")), question="").status_code, 422)
+        self.assertEqual(len(self.gen.calls), before)
+
+    def test_28_internal_notes_never_reach_the_model(self):
+        self.ask(auth(token("wigan")), question="missed bin escalation internal code")
+        self.ask(auth(token("bury")), question="missed bin escalation internal code")
+        texts = " ".join(c["text"] for call in self.gen.calls[-2:] for c in call["chunks"])
+        self.assertNotIn("CANARY-", texts)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,9 @@
-"""Deskville API (layer 5). The council is taken from the verified token only."""
+"""Deskville API (layers 5-6). The council is taken from the verified token only."""
 import logging
 
 from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 from .auth import AuthError, TokenVerifier
 from .db import tenant_tx
@@ -11,7 +12,11 @@ from .embed import to_pgvector
 log = logging.getLogger("deskville.api")
 
 
-def create_app(settings, verifier: TokenVerifier, embedder, pool) -> FastAPI:
+class Question(BaseModel):
+    question: str = Field(min_length=3, max_length=500)
+
+
+def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None) -> FastAPI:
     app = FastAPI(title="Deskville API", docs_url=None, redoc_url=None, openapi_url=None)
 
     @app.exception_handler(AuthError)
@@ -41,15 +46,35 @@ def create_app(settings, verifier: TokenVerifier, embedder, pool) -> FastAPI:
     def search(request: Request, q: str = Query(min_length=3, max_length=300),
                k: int = Query(5, ge=1, le=10), authorization: str | None = Header(None)):
         tenant = council(request, authorization)
+        return {"council": tenant, "query": q, "results": nearest(tenant, q, k)}
+
+    def nearest(tenant: str, q: str, k: int) -> list[dict]:
+        # The one search path (D31): RLS decides which council's chunks exist at all.
         vector = to_pgvector(embedder(q))
         with tenant_tx(pool, settings.tenants[tenant]) as cur:
             cur.execute("SELECT doc_id, heading, chunk, sources, retrieved, distance"
                         " FROM app.search_public(%s::vector, %s)", (vector, k))
             rows = cur.fetchall()
-        return {"council": tenant, "query": q, "results": [
-            {"doc_id": r[0], "heading": r[1], "text": r[2], "sources": r[3],
-             "retrieved": r[4].isoformat() if r[4] else None, "distance": round(r[5], 4)}
-            for r in rows]}
+        return [{"doc_id": r[0], "heading": r[1], "text": r[2], "sources": r[3],
+                 "retrieved": r[4].isoformat() if r[4] else None, "distance": round(r[5], 4)}
+                for r in rows]
+
+    @app.post("/ask")
+    def ask(body: Question, request: Request, authorization: str | None = Header(None)):
+        tenant = council(request, authorization)
+        if generator is None:
+            raise HTTPException(503, "assistant not configured")
+        chunks = nearest(tenant, body.question, 5)
+        # The model only ever sees this council's chunks: it cannot leak what it was never given.
+        out = generator(tenant.title(), body.question, chunks)
+        log.info("ask council=%s chunks=%d in=%d out=%d ms=%d", tenant, len(chunks),
+                 out["input_tokens"], out["output_tokens"], out["latency_ms"])
+        return {"council": tenant, "question": body.question, "answer": out["text"],
+                "sources": [{"n": i, "doc_id": c["doc_id"], "heading": c["heading"], "urls": c["sources"],
+                             "retrieved": c["retrieved"]} for i, c in enumerate(chunks, 1)],
+                "model": generator.model,
+                "usage": {"input_tokens": out["input_tokens"], "output_tokens": out["output_tokens"],
+                          "latency_ms": out["latency_ms"]}}
 
     @app.get("/requests/{reference:path}")
     def service_request(reference: str, request: Request, authorization: str | None = Header(None)):
