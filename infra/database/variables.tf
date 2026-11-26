@@ -30,3 +30,14 @@ variable "bastion_instance_type" {
   type    = string
   default = "t4g.nano"
 }
+
+variable "domain_name" {
+  type    = string
+  default = "deskville.co.uk"
+}
+
+variable "api_desired_count" {
+  description = "API tasks; at least 2, so one can die without an outage"
+  type        = number
+  default     = 2
+}
