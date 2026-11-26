@@ -1,0 +1,138 @@
+# Layer 6 evaluation set: resident questions, written BEFORE the assistant exists,
+# so the score cannot be tuned to the answers. The same question is asked of both
+# councils wherever their answers differ: an answer with the other council's facts fails.
+#
+# Scoring (per question):
+#   must:      every group must match; a group is a list of alternatives (any one, case-insensitive)
+#   must_not:  none may appear (usually the other council's answer)
+#   doc:       the document the answer should cite
+#   kind:      answer | decline (out of scope or about the other council: no facts, point to the right place)
+
+wigan:
+  - id: w01
+    q: Which bin does my glass go in?
+    doc: wigan-waste-collection-days
+    must: [["brown"]]
+  - id: w02
+    q: Can I put food waste in with my garden waste?
+    doc: wigan-waste-garden
+    must: [["green"], ["yes", "together", "food and garden"]]
+    must_not: ["brown bin"]
+  - id: w03
+    q: What time do my bins need to be out?
+    doc: wigan-waste-collection-days
+    must: [["6am", "6:30am", "6 am"]]
+    must_not: ["7am"]
+  - id: w04
+    q: My bin was missed today. When can I report it?
+    doc: wigan-waste-missed-bin
+    must: [["8pm", "8 pm"], ["48 hours"]]
+    must_not: ["1pm the next day"]
+  - id: w05
+    q: How much is a bulky waste collection?
+    doc: wigan-waste-bulky
+    must: [["two free", "2 free"], ["£27"]]
+    must_not: ["£49"]
+  - id: w06
+    q: What phone number do I call to pay my council tax by card?
+    doc: wigan-council-tax-pay
+    must: [["01942 489006"]]
+    must_not: ["0300 456 0542"]
+  - id: w07
+    q: Which days of the month can my council tax Direct Debit come out?
+    doc: wigan-council-tax-pay
+    must: [["6th"], ["21st"], ["27th"]]
+    must_not: ["25th"]
+  - id: w08
+    q: I live alone. Can I get money off my council tax?
+    doc: wigan-council-tax-discounts
+    must: [["25%", "25 per cent"]]
+  - id: w09
+    q: How deep does a pothole need to be before it gets fixed?
+    doc: wigan-pothole
+    must: [["40mm", "40 mm"]]
+  - id: w10
+    q: How early can I renew my Blue Badge?
+    doc: wigan-blue-badge
+    must: [["6 weeks", "six weeks"]]
+    must_not: ["12 weeks"]
+  - id: w11
+    q: When are the Life Centres open?
+    doc: wigan-contact-and-opening-hours
+    must: [["monday to friday"], ["10am", "10 am"], ["4pm", "4 pm"]]
+  - id: w12
+    q: What's the closing date for primary school applications for September 2027?
+    doc: wigan-school-admissions
+    must: [["15 january 2027"]]
+  - id: w13
+    q: What is Bury Council's phone number?
+    kind: decline
+    must_not: ["0161 253 5000"]
+  - id: w14
+    q: Can you recommend a good plumber near me?
+    kind: decline
+
+bury:
+  - id: b01
+    q: Which bin does my glass go in?
+    doc: bury-waste-collection-days
+    must: [["blue"]]
+  - id: b02
+    q: Can I put food waste in with my garden waste?
+    doc: bury-waste-garden
+    must: [["brown"], ["yes", "together", "garden and food"]]
+    must_not: ["green bin"]
+  - id: b03
+    q: What time do my bins need to be out?
+    doc: bury-waste-collection-days
+    must: [["7am", "7 am"]]
+    must_not: ["6am", "6:30am"]
+  - id: b04
+    q: My bin was missed today. When can I report it?
+    doc: bury-waste-missed-bin
+    must: [["5pm", "5 pm"], ["1pm", "1 pm"]]
+    must_not: ["48 hours"]
+  - id: b05
+    q: How much is a bulky waste collection?
+    doc: bury-waste-bulky
+    must: [["£49"]]
+    must_not: ["£27", "two free"]
+  - id: b06
+    q: What phone number do I call to pay my council tax by card?
+    doc: bury-council-tax-pay
+    must: [["0300 456 0542"]]
+    must_not: ["01942 489006"]
+  - id: b07
+    q: Which days of the month can my council tax Direct Debit come out?
+    doc: bury-council-tax-pay
+    must: [["5th"], ["25th"]]
+    must_not: ["27th", "21st"]
+  - id: b08
+    q: I live alone. Can I get money off my council tax?
+    doc: bury-council-tax-discounts
+    must: [["single person discount"]]
+  - id: b09
+    q: How quickly is a dangerous pothole dealt with?
+    doc: bury-pothole
+    must: [["2 hours", "two hours"]]
+  - id: b10
+    q: How early can I renew my Blue Badge?
+    doc: bury-blue-badge
+    must: [["12 weeks", "twelve weeks"]]
+    must_not: ["6 weeks"]
+  - id: b11
+    q: How much does a death certificate cost?
+    doc: bury-births-deaths
+    must: [["£12.50"]]
+  - id: b12
+    q: When do primary school applications open for September 2027?
+    doc: bury-school-admissions
+    must: [["1 november 2026"]]
+    must_not: ["30 september"]
+  - id: b13
+    q: What is Wigan Council's phone number?
+    kind: decline
+    must_not: ["01942 244991"]
+  - id: b14
+    q: Can you recommend a good plumber near me?
+    kind: decline
