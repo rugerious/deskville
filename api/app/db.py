@@ -8,7 +8,10 @@ import psycopg
 from psycopg_pool import ConnectionPool
 
 
-def make_pool(settings, min_size=1, max_size=4):
+def make_pool(settings, min_size=0, max_size=4):
+    # min_size=0: no connection at start-up. In the lab the containers come up
+    # before the migrations have created deskville_app; connecting lazily means
+    # the first request after the data is loaded simply works (D39).
     def token():
         import boto3
         return boto3.client("rds", region_name=settings.region).generate_db_auth_token(
