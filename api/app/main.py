@@ -65,29 +65,50 @@ def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None
         if generator is None:
             raise HTTPException(503, "assistant not configured")
         chunks = nearest(tenant, body.question, 5)
+
+        def lookup(reference: str) -> dict:
+            # Bound to the token's council here; the model can only supply a reference (D42).
+            ref = reference.strip()
+            row = find_request(tenant, ref)
+            if row is None:  # same answer for another council's reference and a missing one
+                return {"reference": ref[:30], "found": False}
+            return {"found": True, **{k: row[k] for k in
+                    ("reference", "category", "status", "area", "created_at", "updated_at")}}
+
         # The model only ever sees this council's chunks: it cannot leak what it was never given.
-        out = generator(tenant.title(), body.question, chunks)
+        out = generator(tenant.title(), body.question, chunks, lookup)
         log.info("ask council=%s chunks=%d in=%d out=%d ms=%d", tenant, len(chunks),
                  out["input_tokens"], out["output_tokens"], out["latency_ms"])
         return {"council": tenant, "question": body.question, "answer": out["text"],
                 "sources": [{"n": i, "doc_id": c["doc_id"], "heading": c["heading"], "urls": c["sources"],
                              "retrieved": c["retrieved"]} for i, c in enumerate(chunks, 1)],
+                "tools": [{"name": "get_service_request", "reference": r["reference"], "found": r["found"]}
+                          for r in out.get("tools", [])],
                 "model": generator.model,
                 "usage": {"input_tokens": out["input_tokens"], "output_tokens": out["output_tokens"],
                           "latency_ms": out["latency_ms"]}}
 
+    REQUEST_KEYS = ["reference", "category", "status", "area", "description", "created_at", "updated_at", "doc_id"]
+
+    def find_request(tenant: str, reference: str) -> dict | None:
+        if not reference or len(reference) > 30:
+            return None
+        with tenant_tx(pool, settings.tenants[tenant]) as cur:
+            cur.execute("SELECT " + ", ".join(REQUEST_KEYS) + " FROM app.service_requests WHERE reference = %s",
+                        (reference,))
+            row = cur.fetchone()
+        if row is None:
+            return None
+        out = dict(zip(REQUEST_KEYS, row))
+        out["created_at"], out["updated_at"] = out["created_at"].isoformat(), out["updated_at"].isoformat()
+        return out
+
     @app.get("/requests/{reference:path}")
     def service_request(reference: str, request: Request, authorization: str | None = Header(None)):
         tenant = council(request, authorization)
-        with tenant_tx(pool, settings.tenants[tenant]) as cur:
-            cur.execute("SELECT reference, category, status, area, description, created_at, updated_at, doc_id"
-                        " FROM app.service_requests WHERE reference = %s", (reference,))
-            row = cur.fetchone()
-        if row is None:  # another council's reference looks exactly like one that doesn't exist
+        out = find_request(tenant, reference)
+        if out is None:  # another council's reference looks exactly like one that doesn't exist
             raise HTTPException(404, "request not found")
-        keys = ["reference", "category", "status", "area", "description", "created_at", "updated_at", "doc_id"]
-        out = dict(zip(keys, row))
-        out["created_at"], out["updated_at"] = out["created_at"].isoformat(), out["updated_at"].isoformat()
         return {"council": tenant, "request": out}
 
     return app
