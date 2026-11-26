@@ -38,7 +38,7 @@ Layers are numbered in the order they are built.
 | 2 | Database: PostgreSQL + pgvector, forced row-level security, IAM-only app role | ✅ 23 Nov 2026 | Isolation suite 12/12 on RDS, run as the application ([output below](#isolation-proven-on-the-real-database)) |
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
-| 5 | API and containers: ECS Fargate, ALB, Cognito | 🟡 in progress | API security tests 22/22 on every PR ([below](#api-the-council-comes-from-the-token)); image built for ARM and scanned, 0 critical ([below](#container-image-built-for-arm-scanned-before-use)); sign-in on the real Cognito pool 5/5 ([below](#sign-in-a-resident-cannot-change-their-council)); containers next |
+| 5 | API and containers: ECS Fargate, ALB, Cognito | ✅ 26 Nov 2026 | [#24](https://github.com/rugerious/deskville/pull/24) [#25](https://github.com/rugerious/deskville/pull/25) [#29](https://github.com/rugerious/deskville/pull/29) [#30](https://github.com/rugerious/deskville/pull/30) [#31](https://github.com/rugerious/deskville/pull/31) [#33](https://github.com/rugerious/deskville/pull/33) [#34](https://github.com/rugerious/deskville/pull/34) [#35](https://github.com/rugerious/deskville/pull/35): against the real address, 18/18 incl. forged tokens and a container stopped mid-traffic: 237 requests, 0 failed ([output below](#on-the-internet-proven-from-outside)) |
 | 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
@@ -244,6 +244,36 @@ all Cognito checks passed
 
 The test residents are synthetic; their passwords are generated and kept in SSM Parameter Store, never printed.
 
+### On the internet, proven from outside
+
+The API runs as two ARM tasks on ECS Fargate (one on-demand, one Spot) behind an HTTPS load balancer at `api.deskville.co.uk`, with a wildcard certificate from ACM. The tasks accept traffic only from the load balancer. All of it lives in the lab stack, so it exists only during a lab session ([D38, D39](docs/DECISIONS.md)). `scripts/api-proof.py` runs from the laptop against the real address, with real Cognito tokens for both test residents, and it stops one of the two tasks on purpose while requests keep arriving ([D40](docs/DECISIONS.md)). Lab session of 26 Nov:
+
+```
+PASS  plain HTTP is only redirected to HTTPS
+PASS  HTTPS with a valid certificate; /health
+PASS  no token -> 401
+PASS  wigan: brown-bin search returns only wigan
+PASS  wigan: top answer says brown bin = mixed recycling, with source + date
+PASS  bury: brown-bin search returns only bury
+PASS  bury: top answer says brown bin = garden, with source + date
+PASS  wigan token + ?tenant=bury -> still wigan
+PASS  wigan token + X-Tenant/X-Forwarded-Host: bury -> still wigan
+PASS  wigan token on bury.deskville.co.uk -> 403
+PASS  real wigan token, payload edited to bury -> 401
+PASS  token signed with my own key, Cognito's key id -> 401
+PASS  bury reads its own request BRY/2026/07376
+PASS  wigan asking for it gets the same 404 as a missing one
+PASS  wigan: resident search never returns an internal note
+PASS  bury: resident search never returns an internal note
+PASS  a task's public IP on port 8080 is unreachable                 TimeoutError
+== resilience: 2 tasks running; requests every 0.25 s for 90 s, one task stopped after 15 s
+PASS  no failed request while a task was lost                        237 requests, 0 failed
+
+all API checks passed
+```
+
+Losing a container is not a theory here: it was done on purpose while residents kept asking, and none of them noticed. The same session also re-ran the database isolation suite (12/12) and ended with `lab down` destroying all 35 resources; the account ID appears in neither public workflow log.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -257,9 +287,9 @@ Every apply is followed by a second plan that must report no changes.
 
 ### Switching the lab on and off
 
-Some parts cost money by the hour (the database, later the load balancer and containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
+Some parts cost money by the hour (the database, the load balancer and the containers). Those are never created by a merge: a pull request still shows their plan, but they are switched on and off only by the manual `lab` workflow (`up` or `down`), which also waits for approval. Nothing expensive can be left running by accident through the normal pipeline.
 
-A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `ingest/load.py` → `ingest/search_test.py` → `lab down`. The session on 24 Nov took about 25 minutes from `up` to `down`.
+A lab session, from the laptop: `lab up` → `db-tunnel.sh` → `db-migrate.sh` (the schema is rebuilt from code every time) → `db-seed-requests.sh` → `db-isolation-test.sh` → `ingest/load.py` → `ingest/search_test.py` → `api-proof.py` → `lab down`. The session on 26 Nov, with the API, took about 36 minutes from `up` to `down`.
 
 The two CI roles and the boundary live in `infra/ci/`, which is applied from a laptop and never by CI: a pipeline should not be able to widen its own trust.
 
@@ -272,7 +302,7 @@ infra/
   bootstrap/    S3 bucket for Terraform state (run once, local state)
   ci/           OIDC roles for GitHub Actions + permissions boundary (laptop only)
   foundation/   VPC, subnets, gateway endpoints, budget, content bucket + ingest role
-  database/     PostgreSQL on RDS + SSM-only bastion (switched by the lab workflow)
+  database/     PostgreSQL on RDS + SSM-only bastion, ALB + ECS Fargate API (switched by the lab workflow)
 content/        council documents (own words, sources linked), inventory, canaries
 db/
   migrations/   schema, roles, row-level security, tenants (applied in order, once)
@@ -281,7 +311,7 @@ db/
 scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 db-migrate.sh, db-seed-requests.sh, db-isolation-test.sh,
                 gen-service-requests.py, s3-isolation-test.sh,
-                cognito-users.sh, cognito-test.sh
+                cognito-users.sh, cognito-test.sh, api-proof.py
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 api/            FastAPI service (council from the verified token only) and its security tests
