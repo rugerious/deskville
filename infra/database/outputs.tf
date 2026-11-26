@@ -22,3 +22,12 @@ output "db_master_secret_arn" {
 output "bastion_instance_id" {
   value = aws_instance.bastion.id
 }
+
+output "api_url" {
+  value = "https://${local.api_host}"
+}
+
+output "api_image" {
+  description = "The image digest the API tasks run"
+  value       = data.aws_ecr_image.api.image_digest
+}

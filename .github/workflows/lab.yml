@@ -62,6 +62,12 @@ jobs:
         run: |
           if [ "${{ inputs.action }}" = "up" ]; then
             terraform plan -no-color -lock-timeout=60s -detailed-exitcode
+            url="$(terraform output -raw api_url)/health"
+            for i in $(seq 1 30); do
+              if out=$(curl -fsS --max-time 5 "$url" 2>/dev/null); then echo "$url -> $out"; break; fi
+              echo "waiting for $url ($i/30)"; sleep 10
+            done
+            curl -fsS --max-time 5 "$url" >/dev/null
           else
             test -z "$(terraform state list)" && echo "database stack is empty: nothing left running"
           fi
