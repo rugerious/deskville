@@ -24,3 +24,9 @@ variable "alert_email" {
   description = "Where budget alerts go (must be a verified budget recipient)"
   type        = string
 }
+
+variable "domain_name" {
+  description = "The project's domain; its Route 53 hosted zone is created by hand (D33)"
+  type        = string
+  default     = "deskville.co.uk"
+}

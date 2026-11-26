@@ -35,3 +35,7 @@ output "cognito_user_pool_id" {
 output "cognito_app_client_id" {
   value = aws_cognito_user_pool_client.web.id
 }
+
+output "domain_name" {
+  value = var.domain_name
+}
