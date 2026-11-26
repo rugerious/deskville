@@ -39,3 +39,11 @@ output "cognito_app_client_id" {
 output "domain_name" {
   value = var.domain_name
 }
+
+output "guardrail_id" {
+  value = aws_bedrock_guardrail.residents.guardrail_id
+}
+
+output "guardrail_version" {
+  value = aws_bedrock_guardrail_version.residents.version
+}
