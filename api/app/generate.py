@@ -26,13 +26,14 @@ REFERENCE = re.compile(r"\b(?:WGN-\d{2}-\d{6}|BRY/\d{4}/\d{5})\b")
 
 
 THINKING = re.compile(r"<thinking>.*?(</thinking>|$)", re.S)
-RESPONSE = re.compile(r"</?response>")
+WRAPPER = re.compile(r"</?(?:response|answer)>")
 
 
 def resident_text(raw: str) -> str:
     # With tools on, Nova writes its reasoning in <thinking> tags and may wrap the answer in
-    # <response>. Residents get the answer only (found by the 6.3 smoke test against the real model).
-    return re.sub(r"\n{3,}", "\n\n", RESPONSE.sub("", THINKING.sub("", raw))).strip()
+    # <response> (found by the 6.3 smoke test) or <answer> (found by the first accuracy run).
+    # Residents get the answer only.
+    return re.sub(r"\n{3,}", "\n\n", WRAPPER.sub("", THINKING.sub("", raw))).strip()
 
 
 def sources_block(chunks):

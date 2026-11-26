@@ -321,6 +321,9 @@ class ResidentText(unittest.TestCase):
         self.assertEqual(resident_text(raw), "No request with the reference BRY/2026/07376 was found. [1]")
         self.assertEqual(resident_text("<thinking>never closed"), "")
         self.assertEqual(resident_text("Plain answer [1]"), "Plain answer [1]")
+        # w10 in the first accuracy run, 26 Nov:
+        self.assertEqual(resident_text("<answer>You can renew your Blue Badge as early as 6 weeks before it expires [1].</answer>"),
+                         "You can renew your Blue Badge as early as 6 weeks before it expires [1].")
 
 
 if __name__ == "__main__":
