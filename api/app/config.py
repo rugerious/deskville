@@ -21,6 +21,8 @@ class Settings:
     site_domain: str = field(default_factory=lambda: os.environ.get("SITE_DOMAIN", "deskville.co.uk"))
     tenants: dict = field(default_factory=lambda: _tenants(os.environ.get(
         "TENANTS", "wigan=0000000a-0000-4000-8000-00000000000a,bury=0000000b-0000-4000-8000-00000000000b")))
+    guardrail_id: str = field(default_factory=lambda: os.environ.get("GUARDRAIL_ID", ""))
+    guardrail_version: str = field(default_factory=lambda: os.environ.get("GUARDRAIL_VERSION", ""))
     db_host: str = field(default_factory=lambda: os.environ.get("DB_HOST", "localhost"))
     db_port: int = field(default_factory=lambda: int(os.environ.get("DB_PORT", "5432")))
     db_name: str = field(default_factory=lambda: os.environ.get("DB_NAME", "deskville"))

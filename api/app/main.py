@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from .auth import AuthError, TokenVerifier
 from .db import tenant_tx
 from .embed import to_pgvector
+from .guard import GuardUnavailable
 
 log = logging.getLogger("deskville.api")
 
@@ -16,7 +17,7 @@ class Question(BaseModel):
     question: str = Field(min_length=3, max_length=500)
 
 
-def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None) -> FastAPI:
+def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None, guard=None) -> FastAPI:
     app = FastAPI(title="Deskville API", docs_url=None, redoc_url=None, openapi_url=None)
 
     @app.exception_handler(AuthError)
@@ -62,8 +63,17 @@ def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None
     @app.post("/ask")
     def ask(body: Question, request: Request, authorization: str | None = Header(None)):
         tenant = council(request, authorization)
-        if generator is None:
+        if generator is None or guard is None:  # no guardrail, no assistant (D44)
             raise HTTPException(503, "assistant not configured")
+        try:
+            gate = guard.check_question(body.question)
+        except GuardUnavailable as e:
+            log.error("guardrail unavailable on question: %s", e)
+            raise HTTPException(503, "assistant unavailable")
+        if gate["blocked"]:  # nothing searched, nothing generated, nothing spent
+            log.info("ask council=%s blocked=question reasons=%s", tenant, gate["reasons"])
+            return {"council": tenant, "question": body.question, "answer": gate["message"],
+                    "blocked": "question", "reasons": gate["reasons"], "sources": [], "tools": []}
         chunks = nearest(tenant, body.question, 5)
 
         def lookup(reference: str) -> dict:
@@ -77,9 +87,21 @@ def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None
 
         # The model only ever sees this council's chunks: it cannot leak what it was never given.
         out = generator(tenant.title(), body.question, chunks, lookup)
+        try:  # the answer is checked against exactly what the model was given
+            check = guard.check_answer(body.question, chunks, out.get("tools", []), out["text"])
+        except GuardUnavailable as e:
+            log.error("guardrail unavailable on answer: %s", e)
+            raise HTTPException(503, "assistant unavailable")
+        if check["blocked"]:
+            log.info("ask council=%s blocked=answer reasons=%s", tenant, check["reasons"])
+            return {"council": tenant, "question": body.question, "answer": check["message"],
+                    "blocked": "answer", "reasons": check["reasons"], "sources": [], "tools": [],
+                    "model": generator.model,
+                    "usage": {"input_tokens": out["input_tokens"], "output_tokens": out["output_tokens"],
+                              "latency_ms": out["latency_ms"]}}
         log.info("ask council=%s chunks=%d in=%d out=%d ms=%d", tenant, len(chunks),
                  out["input_tokens"], out["output_tokens"], out["latency_ms"])
-        return {"council": tenant, "question": body.question, "answer": out["text"],
+        return {"council": tenant, "question": body.question, "answer": out["text"], "blocked": None,
                 "sources": [{"n": i, "doc_id": c["doc_id"], "heading": c["heading"], "urls": c["sources"],
                              "retrieved": c["retrieved"]} for i, c in enumerate(chunks, 1)],
                 "tools": [{"name": "get_service_request", "reference": r["reference"], "found": r["found"]}

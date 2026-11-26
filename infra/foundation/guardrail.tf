@@ -133,3 +133,17 @@ resource "aws_bedrock_guardrail_version" "residents" {
     replace_triggered_by = [aws_bedrock_guardrail.residents]
   }
 }
+
+# Published for the lab stack, which reads them when it starts the API (the provider
+# has no guardrail data source). Plain strings, nothing secret; SSM standard tier is free.
+resource "aws_ssm_parameter" "guardrail_id" {
+  name  = "/${var.name}/guardrail/id"
+  type  = "String"
+  value = aws_bedrock_guardrail.residents.guardrail_id
+}
+
+resource "aws_ssm_parameter" "guardrail_version" {
+  name  = "/${var.name}/guardrail/version"
+  type  = "String"
+  value = aws_bedrock_guardrail_version.residents.version
+}

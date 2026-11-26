@@ -45,6 +45,14 @@ data "aws_cognito_user_pools" "residents" {
   name = "${var.name}-residents"
 }
 
+data "aws_ssm_parameter" "guardrail_id" {
+  name = "/${var.name}/guardrail/id"
+}
+
+data "aws_ssm_parameter" "guardrail_version" {
+  name = "/${var.name}/guardrail/version"
+}
+
 data "aws_cognito_user_pool_clients" "web" {
   user_pool_id = data.aws_cognito_user_pools.residents.ids[0]
 }
@@ -56,6 +64,7 @@ locals {
   web_client_id = data.aws_cognito_user_pool_clients.web.client_ids[index(data.aws_cognito_user_pool_clients.web.client_names, "${var.name}-web")]
   titan_arn     = "arn:aws:bedrock:${data.aws_region.current.region}::foundation-model/amazon.titan-embed-text-v2:0"
   nova_lite_arn = "arn:aws:bedrock:${data.aws_region.current.region}::foundation-model/amazon.nova-lite-v1:0"
+  guardrail_arn = "arn:aws:bedrock:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:guardrail/${data.aws_ssm_parameter.guardrail_id.insecure_value}"
 }
 
 # --- network: who may talk to whom ------------------------------------------
@@ -228,7 +237,7 @@ resource "aws_iam_role_policy_attachment" "api_execution" {
 
 resource "aws_iam_role" "api_task" {
   name                 = "${var.name}-api-task"
-  description          = "The API itself: connect to the database as deskville_app, embed with Titan, answer with Nova Lite"
+  description          = "The API itself: connect to the database as deskville_app, embed with Titan, answer with Nova Lite, check with the guardrail"
   permissions_boundary = local.boundary_arn
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
@@ -259,6 +268,12 @@ resource "aws_iam_role_policy" "api_task" {
         Effect   = "Allow"
         Action   = "bedrock:InvokeModel"
         Resource = local.nova_lite_arn
+      },
+      {
+        Sid      = "CheckQuestionsAndAnswersWithTheResidentsGuardrail"
+        Effect   = "Allow"
+        Action   = "bedrock:ApplyGuardrail"
+        Resource = local.guardrail_arn
       }
     ]
   })
@@ -303,6 +318,8 @@ resource "aws_ecs_task_definition" "api" {
       { name = "COGNITO_USER_POOL_ID", value = local.pool_id },
       { name = "COGNITO_APP_CLIENT_ID", value = local.web_client_id },
       { name = "SITE_DOMAIN", value = var.domain_name },
+      { name = "GUARDRAIL_ID", value = data.aws_ssm_parameter.guardrail_id.insecure_value },
+      { name = "GUARDRAIL_VERSION", value = data.aws_ssm_parameter.guardrail_version.insecure_value },
       { name = "DB_HOST", value = aws_db_instance.main.address },
       { name = "DB_PORT", value = tostring(aws_db_instance.main.port) },
       { name = "DB_NAME", value = aws_db_instance.main.db_name },
