@@ -39,7 +39,7 @@ Layers are numbered in the order they are built.
 | 3 | Content: council documents, synthetic service requests, canaries | ✅ 24 Nov 2026 | [#13](https://github.com/rugerious/deskville/pull/13) [#14](https://github.com/rugerious/deskville/pull/14) [#15](https://github.com/rugerious/deskville/pull/15) [#16](https://github.com/rugerious/deskville/pull/16) [#17](https://github.com/rugerious/deskville/pull/17) [#18](https://github.com/rugerious/deskville/pull/18): 40 documents, 400 requests loaded on RDS; as the application, a real Bury reference returns nothing to Wigan ([output below](#content-and-resident-data)) |
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ✅ 26 Nov 2026 | [#24](https://github.com/rugerious/deskville/pull/24) [#25](https://github.com/rugerious/deskville/pull/25) [#29](https://github.com/rugerious/deskville/pull/29) [#30](https://github.com/rugerious/deskville/pull/30) [#31](https://github.com/rugerious/deskville/pull/31) [#33](https://github.com/rugerious/deskville/pull/33) [#34](https://github.com/rugerious/deskville/pull/34) [#35](https://github.com/rugerious/deskville/pull/35): against the real address, 18/18 incl. forged tokens and a container stopped mid-traffic: 237 requests, 0 failed ([output below](#on-the-internet-proven-from-outside)) |
-| 6 | Assistant: retrieval, tools, Guardrails | ⏳ | |
+| 6 | Assistant: retrieval, tools, Guardrails | 🟡 in progress | Nova Lite answers in London (334 ms); 28 resident questions written before the assistant ([#37](https://github.com/rugerious/deskville/pull/37)); `/ask` gives the model only the token's council, 6 new tests ([below](#assistant-the-model-only-sees-its-own-council)) |
 | 7 | Sites: CloudFront and WAF | ⏳ | |
 | 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
 
@@ -274,6 +274,26 @@ all API checks passed
 
 Losing a container is not a theory here: it was done on purpose while residents kept asking, and none of them noticed. The same session also re-ran the database isolation suite (12/12) and ended with `lab down` destroying all 35 resources; the account ID appears in neither public workflow log.
 
+### Assistant: the model only sees its own council
+
+A resident's question goes to `POST /ask`. The council comes from the token, the same search as `/search` runs inside that council's transaction, and only those five chunks go to Nova Lite, in London, with a system prompt that names only that council ([D41](docs/DECISIONS.md)). The model can't repeat another council's facts because it is never given them. Every answer comes back with its numbered sources, the model, tokens and latency.
+
+The first check, before any code: one call from the laptop to Nova Lite in eu-west-2 answered in 334 ms with 9 tokens and no throttling. The questions that will measure accuracy were written next, before the assistant existed ([eval/](eval/README.md)): 28, most asked of both councils because their answers differ, so an answer with the other council's facts fails. A checker tests the set itself against the documents; its first run caught two of its own rules that were too strict.
+
+Six tests join the 22 on every pull request. A fake model records exactly what it was given:
+
+```
+test_23  ask as Wigan: the model is given only Wigan chunks, prompt names only Wigan   ok
+test_24  ask as Bury: only Bury chunks, prompt names Bury                               ok
+test_25  no token / forged token -> 401, and the model is never called                  ok
+test_26  ?tenant=bury with a Wigan token -> still Wigan, still Wigan chunks             ok
+test_27  question empty or over 500 characters -> 422, model never called              ok
+test_28  internal notes never reach the model                                           ok
+Ran 28 tests: OK
+```
+
+Seen failing: with the council read from `?tenant=` and two Bury chunks added to a Wigan question, tests 23 and 26 fail.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -314,7 +334,8 @@ scripts/        db-tunnel.sh (port-forward through the bastion), db-psql.sh,
                 cognito-users.sh, cognito-test.sh, api-proof.py
 ingest/         chunker.py (sections -> chunks), embed.py (per-council session -> Titan -> S3 cache),
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
-api/            FastAPI service (council from the verified token only) and its security tests
+api/            FastAPI service (council from the verified token only), /ask with Nova Lite, security tests
+eval/           resident questions for the accuracy run, and a checker for the set itself
 docs/           decisions
 ```
 

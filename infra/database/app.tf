@@ -55,6 +55,7 @@ locals {
   pool_id       = data.aws_cognito_user_pools.residents.ids[0]
   web_client_id = data.aws_cognito_user_pool_clients.web.client_ids[index(data.aws_cognito_user_pool_clients.web.client_names, "${var.name}-web")]
   titan_arn     = "arn:aws:bedrock:${data.aws_region.current.region}::foundation-model/amazon.titan-embed-text-v2:0"
+  nova_lite_arn = "arn:aws:bedrock:${data.aws_region.current.region}::foundation-model/amazon.nova-lite-v1:0"
 }
 
 # --- network: who may talk to whom ------------------------------------------
@@ -227,7 +228,7 @@ resource "aws_iam_role_policy_attachment" "api_execution" {
 
 resource "aws_iam_role" "api_task" {
   name                 = "${var.name}-api-task"
-  description          = "The API itself: connect to the database as deskville_app, embed queries with Titan"
+  description          = "The API itself: connect to the database as deskville_app, embed with Titan, answer with Nova Lite"
   permissions_boundary = local.boundary_arn
   assume_role_policy = jsonencode({
     Version   = "2012-10-17"
@@ -252,6 +253,12 @@ resource "aws_iam_role_policy" "api_task" {
         Effect   = "Allow"
         Action   = "bedrock:InvokeModel"
         Resource = local.titan_arn
+      },
+      {
+        Sid      = "AnswerWithNovaLiteInLondonOnly"
+        Effect   = "Allow"
+        Action   = "bedrock:InvokeModel"
+        Resource = local.nova_lite_arn
       }
     ]
   })
