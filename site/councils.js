@@ -32,7 +32,7 @@ export const COUNCILS = {
     name: "Bury",
     site: "https://www.bury.gov.uk/",
     ink: "#1d3557", soft: "#e2e8f0",
-    art: "art/bury.jpg", artPosition: "center 8%",
+    art: "art/bury.jpg", artPosition: "right center",
     artAlt: "Holcombe Hill with Peel Tower on its summit, above the rooftops of the valley",
     artTitle: "Holcombe Hill from Bury",
     artText: "Peel Tower on Holcombe Hill, above the valley.",
