@@ -17,4 +17,4 @@ aws s3 sync "$TMP/" "s3://$BUCKET/" --delete --exclude "fonts/*" --cache-control
 aws s3 sync "$TMP/fonts/" "s3://$BUCKET/fonts/" --delete --cache-control "max-age=31536000, immutable" --no-progress
 aws cloudfront create-invalidation --distribution-id "$DIST" --paths "/*" --no-cli-pager \
   --query 'Invalidation.Status' --output text
-echo "published to $(out site_urls | tr -d '[]"\n ' | tr ',' ' ')"
+echo "published to $(terraform -chdir="$ROOT/infra/foundation" output -json site_urls | tr -d '[]"\n ' | tr ',' ' ')"
