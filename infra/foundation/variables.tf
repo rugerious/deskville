@@ -30,3 +30,9 @@ variable "domain_name" {
   type        = string
   default     = "deskville.co.uk"
 }
+
+variable "councils" {
+  description = "Councils with a site at <council>.<domain_name> (layer 7)"
+  type        = list(string)
+  default     = ["wigan", "bury"]
+}
