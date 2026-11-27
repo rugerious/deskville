@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "eval"))
 import run  # noqa: E402  (shared helpers: terraform outputs, test-user tokens)
 
 CTX = ssl.create_default_context()
+UA = "deskville-site-proof/1.0 (+https://github.com/rugerious/deskville)"  # an honest client names itself
 fails = 0
 
 
@@ -29,7 +30,8 @@ def get(url, method="GET", headers=None, body=None):
     u = urllib.parse.urlsplit(url)
     conn = (http.client.HTTPSConnection(u.hostname, 443, context=CTX, timeout=20) if u.scheme == "https"
             else http.client.HTTPConnection(u.hostname, 80, timeout=20))
-    conn.request(method, (u.path or "/") + (f"?{u.query}" if u.query else ""), body=body, headers=headers or {})
+    headers = {"User-Agent": UA, **(headers or {})}
+    conn.request(method, (u.path or "/") + (f"?{u.query}" if u.query else ""), body=body, headers=headers)
     r = conn.getresponse()
     data = r.read()
     conn.close()
@@ -63,6 +65,8 @@ acl = subprocess.run(["aws", "cloudfront", "get-distribution", "--id", dist, "--
 check(acl.startswith("arn:aws:wafv2:"), "a WAF web ACL is attached to the distribution", acl.split("/")[-2] if "/" in acl else acl or "none")
 status, _, _ = get("https://wigan.deskville.co.uk/?q=%3Cscript%3Ealert(1)%3C%2Fscript%3E")
 check(status == 403, "a cross-site-scripting probe is blocked at the edge", str(status))
+status, _, _ = get("https://wigan.deskville.co.uk/", headers={"User-Agent": ""})
+check(status == 403, "a request that doesn't say what it is (no User-Agent) is blocked", str(status))
 
 print("== sign-in")
 for c in councils:
