@@ -9,10 +9,10 @@
 <meta name="description" content="An unofficial demonstration: ask everyday council questions and get answers with their sources.">
 <link rel="stylesheet" href="style.css">
 <link rel="preload" href="fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/caveat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script type="module" src="app.js"></script>
 </head>
 <body id="top">
-<p class="notice">Unofficial demonstration. Not run by, endorsed by or connected to <span data-council-name>the</span> Council. For real services, use <a data-council-site href="#">the council's own website</a>.</p>
 
 <header class="bar">
   <a class="wordmark" href="./"><span class="word">deskville<span class="dot">.</span></span><span class="town" data-council-name></span></a>
@@ -44,6 +44,7 @@
       <p class="ask-note"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 2.5v5c0 4-2.6 7-6 8.5C6.6 16.5 4 13.5 4 9.5v-5z"/></svg>Don't include bank, card or National Insurance numbers.</p>
       <p id="status" class="status" role="status"></p>
     </div>
+    <p class="demo-note">Just a demo! Not <span data-council-name></span> Council's website. <a data-council-site href="#">The real one</a></p>
     <p class="hero-credit"><span id="art-title"></span>. <span id="art-credit"></span></p>
   </section>
 
@@ -63,23 +64,22 @@
     <ul id="service-list" class="service-list"></ul>
   </section>
 
-  <section class="bins" id="bins" aria-labelledby="bins-title">
-    <h2 id="bins-title">Which bin is which in <span data-council-name></span></h2>
-    <ul id="bin-list" class="bin-list"></ul>
-    <p class="bins-note"><span id="put-out"></span> <a id="bins-source" href="#">Check your address on the council's site</a>.</p>
-  </section>
-
   <section class="how" id="how" aria-labelledby="how-title">
     <div class="how-text">
       <h2 id="how-title">How Deskville works</h2>
       <p>You sign in with a demo account that belongs to one council. Deskville answers from that council's published pages only, and shows you the pages it used. The assistant runs during demonstration sessions; when it is switched off, the page still works but questions can't be answered.</p>
       <a href="https://github.com/rugerious/deskville">See how it is built</a>
     </div>
-    <ul class="proofs">
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3.3v6.2c0 5-3.4 8.8-8 10.5C7.4 20.3 4 16.5 4 11.5V5.3z"/><path class="tick" d="M8 12l3 3 5-6"/></svg><span>Only <span data-council-name></span>'s pages</span></li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5z"/><path class="tick" d="M8 11h8M8 15h8M8 7h5"/></svg>Every answer shows its source</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path class="tick" d="M8 10V7a4 4 0 018 0v3"/></svg>Data kept in London</li>
-    </ul>
+    <aside class="postit" aria-labelledby="trust-title">
+      <h3 id="trust-title">Can I trust this?</h3>
+      <p class="postit-yes">Yes, because it:</p>
+      <ul>
+        <li>only uses <span data-council-name></span> Council's pages</li>
+        <li>links you to the real page</li>
+        <li>says when it doesn't know</li>
+        <li>never asks for bank details</li>
+      </ul>
+    </aside>
   </section>
 </main>
 
