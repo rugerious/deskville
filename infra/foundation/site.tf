@@ -5,7 +5,9 @@
 # The site's address chooses only how the page looks; which data a resident
 # sees still comes from their token alone (D33).
 # The plan subscription itself is made in the console (not in Terraform); the
-# plan attaches its own web ACL, which Terraform therefore ignores.
+# plan attaches its own web ACL, which Terraform therefore ignores. The plan
+# creates its rules in Count mode: scripts/waf-enforce.py turns them to Block
+# and adds a per-IP rate limit (D46).
 # ---------------------------------------------------------------------------
 locals {
   site_hosts = [for c in var.councils : "${c}.${var.domain_name}"]
@@ -96,7 +98,7 @@ resource "aws_cloudfront_distribution" "site" {
   default_root_object = "index.html"
   is_ipv6_enabled     = true
   http_version        = "http2and3"
-  price_class         = "PriceClass_100"
+  price_class         = "PriceClass_All" # set by the Free flat-rate plan, which serves from every edge location
 
   origin {
     origin_id                = "site-bucket"
