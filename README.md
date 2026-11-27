@@ -8,6 +8,8 @@ That last sentence is the whole point. Sharing infrastructure is cheap. Proving 
 
 > **Unofficial demonstration.** This project is not affiliated with, endorsed by or operated on behalf of any council. Council content is written in our own words from facts on the councils' public pages, and every document links its sources. All resident data in this project is fictional.
 
+**Start here:** the [case study](docs/CASE-STUDY.md) has the whole project on one page: what was measured, how isolation works wall by wall, and what broke on the way.
+
 ## Tenants
 
 | Tenant | Content | Resident data |
@@ -40,8 +42,8 @@ Layers are numbered in the order they are built.
 | 4 | Ingestion: chunking and embeddings, tenant stamped | ✅ 25 Nov 2026 | [#20](https://github.com/rugerious/deskville/pull/20) [#21](https://github.com/rugerious/deskville/pull/21) [#22](https://github.com/rugerious/deskville/pull/22) and the search PR: storage isolation 18/18; search as the application 30/30 on RDS, incl. canaries and the HNSW trap ([output below](#search-each-council-finds-only-its-own)) |
 | 5 | API and containers: ECS Fargate, ALB, Cognito | ✅ 26 Nov 2026 | [#24](https://github.com/rugerious/deskville/pull/24) [#25](https://github.com/rugerious/deskville/pull/25) [#29](https://github.com/rugerious/deskville/pull/29) [#30](https://github.com/rugerious/deskville/pull/30) [#31](https://github.com/rugerious/deskville/pull/31) [#33](https://github.com/rugerious/deskville/pull/33) [#34](https://github.com/rugerious/deskville/pull/34) [#35](https://github.com/rugerious/deskville/pull/35): against the real address, 18/18 incl. forged tokens and a container stopped mid-traffic: 237 requests, 0 failed ([output below](#on-the-internet-proven-from-outside)) |
 | 6 | Assistant: retrieval, tools, Guardrails | ✅ 26 Nov 2026 | [#37](https://github.com/rugerious/deskville/pull/37) [#38](https://github.com/rugerious/deskville/pull/38) [#39](https://github.com/rugerious/deskville/pull/39) [#40](https://github.com/rugerious/deskville/pull/40) [#41](https://github.com/rugerious/deskville/pull/41) [#42](https://github.com/rugerious/deskville/pull/42): first accuracy run through the real API: 20/28 delivered, every factual answer generated correctly (24/24), 0 wrong facts and 0 other-council facts delivered; the 8 misses were correct answers held back by the grounding check ([below](#first-accuracy-run)) |
-| 7 | Sites: CloudFront + WAF, two council sites | 🟡 in progress | Both sites live on CloudFront's Free plan; WAF blocking (three AWS managed groups + per-IP rate limit), private bucket, hosted sign-in with PKCE; API allows only the two sites ([D46](docs/DECISIONS.md), [D47](docs/DECISIONS.md)); final proof with the API up next |
-| 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ⏳ | |
+| 7 | Sites: CloudFront + WAF, two council sites | ✅ 27 Nov 2026 | [#44](https://github.com/rugerious/deskville/pull/44) [#45](https://github.com/rugerious/deskville/pull/45) [#46](https://github.com/rugerious/deskville/pull/46) [#47](https://github.com/rugerious/deskville/pull/47) [#48](https://github.com/rugerious/deskville/pull/48): both sites live on CloudFront's Free plan, WAF blocking, all site checks passed from outside; a token on the other council's site refused (test 40) ([below](#both-sites-proven-from-outside)) |
+| 8 | Case study: the numbers (isolation, accuracy, cost per tenant) | ✅ 27 Nov 2026 | [docs/CASE-STUDY.md](docs/CASE-STUDY.md): every number linked to its proof, isolation wall by wall, decisions, scars, measured cost and known limits |
 
 Isolation tests and tracing are not a layer at the end: they start at layer 2 and grow with every layer after it.
 
@@ -388,6 +390,29 @@ All eight were right, and the same answers scored differently minutes apart (w03
 ![The top of both sites: the same page, each opening on its own town](docs/images/sites-wigan-bury.png)
 
 The question box is in the first screen; the services fill it with a sample question; every answer lists the council pages it came from. Residents sign in on Cognito's hosted page (authorization code with PKCE), and the token is kept in memory only. The page loads nothing from outside the site except the API and the sign-in service, and its Content Security Policy says so. When the lab is down, the page says the assistant is switched off instead of failing. The type is Atkinson Hyperlegible, designed for legibility, self-hosted under the SIL Open Font License. `scripts/site-deploy.sh` publishes the page; `scripts/site-proof.py` checks both sites from outside like any visitor.
+
+### Both sites, proven from outside
+
+`scripts/site-proof.py` checks the live sites the way any visitor reaches them, and names itself as it does ([D47](docs/DECISIONS.md)). Run on 27 Nov, after the CloudFront plan's web ACL was switched from counting to blocking:
+
+```
+== the sites
+PASS  https://wigan.deskville.co.uk/ and https://bury.deskville.co.uk/: both unofficial notices,
+      Content Security Policy, HSTS, nosniff, frame protection, plain HTTP only redirected   (10 checks)
+== the bucket behind them
+PASS  the bucket refuses a direct request (only CloudFront may read it)  403
+== the edge
+PASS  a WAF web ACL is attached to the distribution                      CreatedByCloudFront-0c7ecd56
+PASS  a cross-site-scripting probe is blocked at the edge                403
+PASS  a request that doesn't say what it is (no User-Agent) is blocked   403
+== sign-in
+PASS  wigan: the hosted sign-in accepts its own site as the return address 302
+PASS  bury: the hosted sign-in accepts its own site as the return address 302
+PASS  it refuses to send a signed-in resident to any other address       302
+all site checks passed
+```
+
+The first run with the WAF attached still let the probe through: every rule group was counting, not blocking. Switching them to block (`scripts/waf-enforce.py`) caught the proof itself, which sent no User-Agent; it now names itself, so each rule is proven on its own. Sign-in was then proven in a browser: the hosted page with PKCE, back on the council's site, signed in as the Wigan test resident. That the address never picks the data is tested on every pull request: CORS answers only the two sites, and a Wigan token used from Bury's site is refused (tests 38 to 40). The same script repeats those checks against the real API in the next lab session.
 
 ## How changes reach AWS
 
