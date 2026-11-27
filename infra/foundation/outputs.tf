@@ -47,3 +47,19 @@ output "guardrail_id" {
 output "guardrail_version" {
   value = aws_bedrock_guardrail_version.residents.version
 }
+
+output "site_bucket" {
+  value = aws_s3_bucket.site.id
+}
+
+output "site_distribution_id" {
+  value = aws_cloudfront_distribution.site.id
+}
+
+output "site_urls" {
+  value = [for h in local.site_hosts : "https://${h}/"]
+}
+
+output "login_domain" {
+  value = "${aws_cognito_user_pool_domain.residents.domain}.auth.${var.region}.amazoncognito.com"
+}

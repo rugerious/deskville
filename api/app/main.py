@@ -1,7 +1,8 @@
-"""Deskville API (layers 5-6). The council is taken from the verified token only."""
+"""Deskville API (layers 5-7). The council is taken from the verified token only."""
 import logging
 
 from fastapi import FastAPI, Header, HTTPException, Query, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -19,6 +20,11 @@ class Question(BaseModel):
 
 def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None, guard=None) -> FastAPI:
     app = FastAPI(title="Deskville API", docs_url=None, redoc_url=None, openapi_url=None)
+    # Browsers may call the API only from the councils' own sites (layer 7, D46).
+    app.add_middleware(CORSMiddleware,
+                       allow_origins=[f"https://{t}.{settings.site_domain}" for t in settings.tenants],
+                       allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"],
+                       allow_credentials=False, max_age=600)
 
     @app.exception_handler(AuthError)
     def _auth_error(request: Request, exc: AuthError):
@@ -30,13 +36,16 @@ def create_app(settings, verifier: TokenVerifier, embedder, pool, generator=None
         tenant = verifier.verify(authorization)
         # The host name may choose which site is shown, never which data is read.
         # A council's own site with another council's token is refused.
-        host = (request.headers.get("host") or "").split(":")[0].lower()
+        # The same rule for the page the browser is on (its Origin): a Wigan resident
+        # signed in on Bury's site is told so, instead of being shown Wigan's answers there.
         suffix = "." + settings.site_domain
-        if host.endswith(suffix):
-            site = host[: -len(suffix)]
-            if site in settings.tenants and site != tenant:
-                raise AuthError(403, "token is for another council's site",
-                                f"host={host} token tenant={tenant}")
+        for name, value in (("host", request.headers.get("host")), ("origin", request.headers.get("origin"))):
+            host = (value or "").split("://")[-1].split(":")[0].split("/")[0].lower()
+            if host.endswith(suffix):
+                site = host[: -len(suffix)]
+                if site in settings.tenants and site != tenant:
+                    raise AuthError(403, "token is for another council's site",
+                                    f"{name}={host} token tenant={tenant}")
         return tenant
 
     @app.get("/health")

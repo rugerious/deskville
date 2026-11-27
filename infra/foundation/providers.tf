@@ -19,3 +19,17 @@ provider "aws" {
     }
   }
 }
+
+# CloudFront only accepts certificates from us-east-1 (layer 7, D46).
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+  default_tags {
+    tags = {
+      Project     = "deskville"
+      Environment = "lab"
+      Stack       = "foundation"
+      ManagedBy   = "terraform"
+    }
+  }
+}

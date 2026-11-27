@@ -55,6 +55,15 @@ resource "aws_cognito_user_pool_client" "web" {
   read_attributes  = ["custom:tenant", "name"]
   write_attributes = ["name"] # NOT custom:tenant: a user can never move themselves to another council
 
+  # Layer 7: the sites sign in through the hosted login page (code + PKCE) and
+  # come back only to their own address.
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["openid", "profile"]
+  supported_identity_providers         = ["COGNITO"]
+  callback_urls                        = [for c in var.councils : "https://${c}.${var.domain_name}/"]
+  logout_urls                          = [for c in var.councils : "https://${c}.${var.domain_name}/"]
+
   prevent_user_existence_errors = "ENABLED"
   enable_token_revocation       = true
 

@@ -311,6 +311,27 @@ class Api(unittest.TestCase):
             self.guard.down = False
         self.assertEqual(r.status_code, 503)
         self.assertEqual(len(self.gen.calls), before)
+    # --- the sites (layer 7): CORS for the two councils only, Origin like Host -----------
+    def test_38_cors_allows_each_councils_site(self):
+        for c in ("wigan", "bury"):
+            r = self.client.options("/ask", headers={"Origin": f"https://{c}.deskville.co.uk",
+                                                     "Access-Control-Request-Method": "POST",
+                                                     "Access-Control-Request-Headers": "authorization,content-type"})
+            self.assertEqual(r.status_code, 200, r.text)
+            self.assertEqual(r.headers.get("access-control-allow-origin"), f"https://{c}.deskville.co.uk")
+
+    def test_39_cors_refuses_any_other_page(self):
+        for origin in ("https://evil.example", "https://wigan.deskville.co.uk.evil.example",
+                       "http://wigan.deskville.co.uk", "https://api.deskville.co.uk"):
+            r = self.client.options("/ask", headers={"Origin": origin, "Access-Control-Request-Method": "POST"})
+            self.assertNotEqual(r.headers.get("access-control-allow-origin"), origin, origin)
+
+    def test_40_signed_in_on_the_other_councils_site(self):
+        r = self.ask({**auth(token("wigan")), "Origin": "https://bury.deskville.co.uk"})
+        self.assertEqual(r.status_code, 403)
+        ok = self.ask({**auth(token("wigan")), "Origin": "https://wigan.deskville.co.uk"})
+        self.assertEqual(ok.status_code, 200, ok.text)
+        self.assertEqual(ok.headers.get("access-control-allow-origin"), "https://wigan.deskville.co.uk")
 
 
 class ResidentText(unittest.TestCase):
