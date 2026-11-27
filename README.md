@@ -381,6 +381,14 @@ Every miss was the same thing, and in all eight the expected document had been r
 
 All eight were right, and the same answers scored differently minutes apart (w03: 0.42, then 0.77). So the assistant fails safe, but too often. The threshold is not lowered to turn these eight green: that would tune the check to the questions that measure it. Recalibrating it is the next task, judged on new questions ([D45](docs/DECISIONS.md)). The same session re-ran the API proof on the new image: 233 requests, 0 failed, with a task stopped mid-traffic.
 
+### Two council sites, one page
+
+`wigan.deskville.co.uk` and `bury.deskville.co.uk` are the same static page on one CloudFront distribution ([D46](docs/DECISIONS.md)). Each opens on its own town, full width: Trencherfield Mill and the canal at Wigan Pier; Peel Tower on Holcombe Hill above Bury. The address decides only what the page looks like (the image, the colour, the council's bin key from its own collection page). Which data a resident gets still comes from their token alone: a Wigan resident signed in on Bury's site is refused by the API.
+
+![The top of both sites: the same page, each opening on its own town](docs/images/sites-wigan-bury.png)
+
+The question box is in the first screen; the services fill it with a sample question; every answer lists the council pages it came from. Residents sign in on Cognito's hosted page (authorization code with PKCE), and the token is kept in memory only. The page loads nothing from outside the site except the API and the sign-in service, and its Content Security Policy says so. When the lab is down, the page says the assistant is switched off instead of failing. The type is Atkinson Hyperlegible, designed for legibility, self-hosted under the SIL Open Font License. `scripts/site-deploy.sh` publishes the page; `scripts/site-proof.py` checks both sites from outside like any visitor.
+
 ## How changes reach AWS
 
 No long-lived AWS keys exist anywhere. GitHub Actions proves who it is with a short-lived OIDC token, and AWS hands back a role for one hour.
@@ -424,6 +432,7 @@ ingest/         chunker.py (sections -> chunks), embed.py (per-council session -
                 load.py (cache -> pgvector, no Bedrock calls), search_test.py (search as the app)
 api/            FastAPI service (council from the verified token only), /ask with Nova Lite, security tests
 eval/           resident questions, a checker for the set, the accuracy run, its diagnosis, results/
+site/           the councils' page (one for both), its fonts, per-council presentation
 docs/           decisions
 ```
 

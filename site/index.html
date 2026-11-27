@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://api.deskville.co.uk https://deskville-residents.auth.eu-west-2.amazoncognito.com; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Deskville: your town's front desk (unofficial demo)</title>
+<meta name="description" content="An unofficial demonstration: ask everyday council questions and get answers with their sources.">
+<link rel="stylesheet" href="style.css">
+<link rel="preload" href="fonts/dm-serif-display-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script type="module" src="app.js"></script>
+</head>
+<body id="top">
+<p class="notice">Unofficial demonstration. Not run by, endorsed by or connected to <span data-council-name>the</span> Council. For real services, use <a data-council-site href="#">the council's own website</a>.</p>
+
+<header class="bar">
+  <a class="wordmark" href="./"><span class="word">deskville<span class="dot">.</span></span><span class="town" data-council-name></span></a>
+  <nav class="nav" aria-label="On this page">
+    <a href="#top" aria-current="page">Home</a><a href="#services">Services</a><a href="#how">How it works</a><a data-council-site href="#">Council website</a>
+  </nav>
+  <div class="who">
+    <span id="who" class="who-name" hidden></span>
+    <button id="signin" class="btn btn-line" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.5" r="3.5"/><path d="M3 18c.6-4 3.4-6 7-6s6.4 2 7 6"/></svg>Sign in</button>
+    <button id="signout" class="btn btn-line" type="button" hidden>Sign out</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="title">
+    <img id="art" class="hero-art" src="" alt="" width="1200" height="860">
+    <div class="hero-wash" aria-hidden="true"></div>
+    <div class="hero-copy" id="ask">
+      <h1 id="title"><span>Your town.</span> <span>Your questions.</span> <span>One front desk.</span></h1>
+      <svg class="swash" viewBox="0 0 300 16" aria-hidden="true"><path d="M3 11 C80 3 190 2 297 7" /></svg>
+      <p class="lede">Ask about bins, council tax, parking and more. Answers come from <span data-council-name></span> Council's published pages, with the page each one came from.</p>
+      <form id="askform" class="ask" novalidate>
+        <label class="sr-only" for="q">Your question</label>
+        <div class="ask-row">
+          <input id="q" name="q" type="text" maxlength="500" autocomplete="off" placeholder="For example: which bin does my glass go in?">
+          <button id="send" class="btn btn-main" type="submit">Ask</button>
+        </div>
+      </form>
+      <p class="ask-note"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 2.5v5c0 4-2.6 7-6 8.5C6.6 16.5 4 13.5 4 9.5v-5z"/></svg>Don't include bank, card or National Insurance numbers.</p>
+      <p id="status" class="status" role="status"></p>
+    </div>
+    <p class="hero-credit"><span id="art-title"></span>. <span id="art-credit"></span></p>
+  </section>
+
+  <article id="answer" class="answer" aria-live="polite" hidden>
+    <h2 class="answer-heading">The answer</h2>
+    <p id="answer-text" class="answer-text"></p>
+    <p id="answer-tools" class="answer-tools" hidden></p>
+    <h3 id="sources-title" class="sources-title">Where this came from</h3>
+    <ol id="answer-sources" class="sources" aria-labelledby="sources-title"></ol>
+  </article>
+
+  <section class="services" id="services" aria-labelledby="services-title">
+    <div class="services-head">
+      <h2 id="services-title">Popular services</h2>
+      <p>Pick one to start a question, then change it to your own words.</p>
+    </div>
+    <ul id="service-list" class="service-list"></ul>
+  </section>
+
+  <section class="bins" id="bins" aria-labelledby="bins-title">
+    <h2 id="bins-title">Which bin is which in <span data-council-name></span></h2>
+    <ul id="bin-list" class="bin-list"></ul>
+    <p class="bins-note"><span id="put-out"></span> <a id="bins-source" href="#">Check your address on the council's site</a>.</p>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="how-title">
+    <div class="how-text">
+      <h2 id="how-title">How Deskville works</h2>
+      <p>You sign in with a demo account that belongs to one council. Deskville answers from that council's published pages only, and shows you the pages it used. The assistant runs during demonstration sessions; when it is switched off, the page still works but questions can't be answered.</p>
+      <a href="https://github.com/rugerious/deskville">See how it is built</a>
+    </div>
+    <ul class="proofs">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3.3v6.2c0 5-3.4 8.8-8 10.5C7.4 20.3 4 16.5 4 11.5V5.3z"/><path class="tick" d="M8 12l3 3 5-6"/></svg><span>Only <span data-council-name></span>'s pages</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5z"/><path class="tick" d="M8 11h8M8 15h8M8 7h5"/></svg>Every answer shows its source</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path class="tick" d="M8 10V7a4 4 0 018 0v3"/></svg>Data kept in London</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <span class="wordmark wordmark-foot"><span class="word">deskville<span class="dot">.</span></span><span class="town" data-council-name></span></span>
+    <p>Unofficial demonstration. Not a <span data-council-name></span> Council website.</p>
+    <a data-council-site href="#">The council's website</a>
+    <a href="https://github.com/rugerious/deskville/tree/main/content">Sources</a>
+    <svg id="skyline" class="skyline" viewBox="0 0 380 74" aria-hidden="true" focusable="false"></svg>
+  </div>
+</footer>
+</body>
+</html>
