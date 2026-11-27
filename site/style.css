@@ -1,0 +1,156 @@
+/* Deskville council sites. The town's image carries the page. Display: DM Serif
+   Display; text: Atkinson Hyperlegible (both SIL Open Font License, self-hosted). */
+@font-face { font-family: "Display"; font-weight: 400; font-display: swap;
+  src: url("fonts/dm-serif-display-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson"; font-weight: 400; font-display: swap;
+  src: url("fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson"; font-weight: 700; font-display: swap;
+  src: url("fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); }
+
+:root {
+  --paper: #f7f3ec;
+  --panel: #fffdf9;
+  --ink: #1f3d36;               /* per council, set by app.js */
+  --soft: #e4ebe6;
+  --text: #20262a;
+  --muted: #55615c;
+  --line: #e2dccf;
+  --orange: #b8501a;            /* 5.0:1 with white text */
+  --warn: #9a3412;
+  --wide: 80rem;
+  font-family: "Atkinson", system-ui, sans-serif;
+  font-size: 106.25%;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--paper);
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+a { color: var(--ink); text-underline-offset: .2em; }
+a:hover { color: var(--orange); }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2, h3 { font-family: "Display", Georgia, serif; font-weight: 400; color: var(--ink); letter-spacing: -.01em; }
+svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.notice { margin: 0; padding: .5rem 1.5rem; background: var(--ink); color: #f7f3ec; font-size: .88rem; text-align: center; }
+.notice a { color: #fff; }
+
+/* ---- header ---- */
+.bar { position: relative; z-index: 3; max-width: var(--wide); margin: 0 auto; padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 2.5rem; }
+.wordmark { display: inline-flex; align-items: center; text-decoration: none; color: var(--ink); }
+.wordmark .word { font-family: "Display", Georgia, serif; font-size: 2.3rem; line-height: 1; letter-spacing: -.02em; }
+.wordmark .dot { color: var(--orange); }
+.wordmark .town { font-family: "Display", Georgia, serif; font-size: 1.55rem; margin-left: .9rem; padding-left: .9rem; border-left: 2px solid currentColor; line-height: 1.1; }
+.nav { display: flex; gap: 2rem; margin: 0 auto; }
+.nav a { color: var(--text); font-weight: 700; text-decoration: none; padding-block: .4rem; border-bottom: 3px solid transparent; }
+.nav a:hover, .nav a[aria-current] { color: var(--ink); border-bottom-color: var(--orange); }
+.who { display: flex; align-items: center; gap: .75rem; font-size: .92rem; color: var(--muted); }
+
+.btn { font: inherit; font-weight: 700; cursor: pointer; border-radius: 10px; min-height: 46px; padding: .5rem 1.15rem; display: inline-flex; align-items: center; gap: .5rem; }
+.btn:disabled { cursor: progress; opacity: .6; }
+.btn svg { width: 1.1rem; height: 1.1rem; fill: currentColor; stroke: none; }
+.btn-line { background: var(--panel); color: var(--ink); border: 2px solid var(--ink); }
+.btn-line:hover { background: var(--ink); color: #fff; }
+.btn-main { background: var(--orange); color: #fff; border: 0; padding-inline: 1.6rem; border-radius: 10px; }
+.btn-main:hover { background: #9a4114; }
+
+/* ---- hero: the town, full bleed, the words over the wash ---- */
+.hero { position: relative; min-height: 34rem; display: flex; align-items: center; overflow: hidden; margin-top: -1px; }
+.hero-art { position: absolute; inset: 0 0 0 auto; width: 64%; height: 100%; object-fit: cover; object-position: var(--art-position, center); }
+.hero-wash { position: absolute; inset: 0; background: linear-gradient(90deg, var(--paper) 0%, var(--paper) 36%, rgba(247, 243, 236, .86) 44%, rgba(247, 243, 236, 0) 62%); }
+.hero-copy { position: relative; z-index: 2; width: 100%; max-width: var(--wide); margin: 0 auto; padding: 2.5rem 1.5rem 3.5rem; }
+.hero-copy > * { max-width: 36rem; }
+h1 { font-size: clamp(2.9rem, 6vw, 4.9rem); line-height: .98; margin: 0; }
+h1 span { display: block; }
+.swash { display: block; width: min(17rem, 60%); height: 1rem; margin: .4rem 0 1.4rem; stroke: var(--orange); stroke-width: 4; }
+.lede { font-size: 1.15rem; margin: 0 0 1.5rem; color: var(--text); }
+.ask { background: var(--panel); border-radius: 14px; padding: .45rem; box-shadow: 0 10px 30px rgba(32, 38, 42, .14); max-width: 38rem; }
+.ask-row { display: flex; gap: .45rem; }
+.ask input { flex: 1; min-width: 0; font: inherit; color: var(--text); padding: .8rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.ask-note { display: flex; align-items: center; gap: .45rem; margin: .8rem 0 0; font-size: .9rem; color: var(--muted); }
+.ask-note svg { width: 1.05rem; height: 1.05rem; fill: var(--ink); stroke: none; flex: none; }
+.status { margin: .75rem 0 0; font-weight: 700; color: var(--ink); background: var(--panel); display: inline-block; padding: .5rem .8rem; border-radius: 8px; }
+.status:empty { display: none; }
+.status[data-tone="error"] { color: var(--warn); }
+.hero-credit { position: absolute; z-index: 2; right: 1rem; bottom: .7rem; margin: 0; padding: .25rem .6rem; border-radius: 6px; background: rgba(32, 38, 42, .62); color: #fff; font-size: .8rem; }
+
+/* ---- the answer ---- */
+.answer { max-width: var(--wide); margin: 1.5rem auto 0; padding: 0 1.5rem; }
+.answer > * { max-width: 46rem; }
+.answer-heading { font-size: 1.6rem; margin: 0 0 .5rem; }
+.answer-text { font-size: 1.15rem; margin: 0 0 1rem; }
+.answer[data-blocked="question"] .answer-text, .answer[data-blocked="answer"] .answer-text { color: var(--muted); }
+.cite { display: inline-block; min-width: 1.4em; padding: 0 .3em; margin-left: .15em; font-size: .78em; font-weight: 700; line-height: 1.5; text-align: center; text-decoration: none; color: #fff; background: var(--ink); border-radius: 4px; vertical-align: .12em; }
+.answer-tools { margin: 0 0 1rem; }
+.sources-title { font-size: 1.15rem; margin: 0 0 .4rem; }
+.sources { margin: 0; padding-left: 1.4rem; }
+.sources li { margin-bottom: .45rem; }
+.source-title { font-weight: 700; margin-right: .5rem; }
+.source-date { color: var(--muted); margin-left: .5rem; }
+
+/* ---- services, bins, how ---- */
+.services, .bins, .how { max-width: var(--wide); margin: 0 auto; padding: 2.75rem 1.5rem 0; }
+h2 { font-size: clamp(1.9rem, 3vw, 2.4rem); line-height: 1.05; margin: 0 0 .5rem; }
+.services { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 2rem; align-items: stretch; }
+.services-head { border-right: 2px solid var(--orange); padding-right: 1.5rem; }
+.services-head p { margin: 0; color: var(--muted); }
+.service-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.service { width: 100%; height: 100%; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto 1fr; column-gap: .9rem; row-gap: .6rem; align-items: start; text-align: left; font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem; cursor: pointer; box-shadow: 0 2px 6px rgba(32, 38, 42, .05); }
+.service:hover { border-color: var(--ink); }
+.service-icon { flex: none; display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border-radius: 50%; background: var(--ink); color: #fff; }
+.service-icon svg { width: 1.6rem; height: 1.6rem; }
+.service-text { grid-column: 1 / -1; min-width: 0; }
+.service-text strong { display: block; font-family: "Display", Georgia, serif; font-weight: 400; font-size: 1.3rem; line-height: 1.1; color: var(--ink); margin-bottom: .25rem; }
+.service-text span { font-size: .92rem; color: var(--muted); }
+.service-go { justify-self: end; align-self: center; color: var(--orange); grid-column: 2; grid-row: 1; }
+.service-go svg { width: 1.3rem; height: 1.3rem; }
+
+.bin-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.bin-list li { display: flex; gap: .9rem; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 1rem; }
+.bin-list svg { flex: 0 0 2.8rem; width: 2.8rem; height: auto; stroke: none; }
+.bin-list p { margin: 0; font-size: .95rem; line-height: 1.4; }
+.bin-list strong { font-size: 1.05rem; color: var(--ink); }
+.bin-list p span { color: var(--muted); }
+.bins-note { margin: 1rem 0 0; }
+
+.how { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 2rem 2.25rem; width: min(calc(var(--wide) - 3rem), calc(100% - 3rem)); margin: 2.75rem auto 3rem; box-shadow: 0 2px 8px rgba(32, 38, 42, .05); }
+.how-text p { margin: 0 0 .8rem; }
+.how-text a { font-weight: 700; }
+.proofs { list-style: none; margin: 0; padding: 1.25rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #f1ece2; border-radius: 14px; }
+.proofs li { display: flex; flex-direction: column; align-items: center; gap: .5rem; text-align: center; padding: .25rem .75rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.proofs li + li { border-left: 1px solid #d8d0c1; }
+.proofs svg { width: 2.4rem; height: 2.4rem; fill: var(--ink); stroke: var(--ink); }
+.proofs svg .tick { stroke: #fff; fill: none; stroke-width: 2.2; }
+
+.foot { background: var(--ink); color: #f7f3ec; }
+.foot-inner { max-width: var(--wide); margin: 0 auto; padding: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
+.foot p { margin: 0; font-size: .92rem; }
+.foot a { color: #fff; font-size: .92rem; }
+.wordmark-foot { color: #fff; }
+.skyline { margin-left: auto; width: 12.5rem; height: auto; stroke: rgba(255, 255, 255, .85); stroke-width: 1.6; fill: none; }
+.wordmark-foot .word { font-size: 1.9rem; }
+.wordmark-foot .town { font-size: 1.3rem; }
+
+@media (max-width: 62rem) {
+  .nav { display: none; }
+  .hero { flex-direction: column; align-items: stretch; min-height: 0; }
+  .hero-art { position: relative; inset: auto; width: 100%; height: 15rem; order: -1; }
+  .hero-wash { display: none; }
+  .hero-copy { padding-top: 1.5rem; }
+  .hero-credit { top: 13.6rem; bottom: auto; }
+  .services { grid-template-columns: 1fr; }
+  .services-head { border-right: 0; padding-right: 0; border-left: 3px solid var(--orange); padding-left: 1rem; }
+  .service-list, .bin-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .how { grid-template-columns: 1fr; }
+}
+@media (max-width: 36rem) {
+  .who-name { display: none; }
+  .skyline { width: 100%; max-width: 20rem; }
+  .wordmark .word { font-size: 1.9rem; }
+  .wordmark .town { font-size: 1.3rem; }
+  .ask-row { flex-direction: column; }
+  .service-list, .bin-list, .proofs { grid-template-columns: 1fr; }
+  .proofs li + li { border-left: 0; border-top: 1px solid #d8d0c1; padding-top: .75rem; }
+}
