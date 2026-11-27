@@ -22,15 +22,16 @@ document.title = `Deskville ${council.name}: your town's front desk (unofficial 
 Object.assign($("art"), { src: council.art, alt: council.artAlt });
 $("art-title").textContent = council.artTitle;
 $("art-credit").textContent = council.artCredit;
-$("put-out").textContent = council.putOut;
 $("skyline").innerHTML = council.skyline;
-$("bins-source").href = council.binsSource;
 
 const BIN = (hex) => `<svg viewBox="0 0 64 80" aria-hidden="true" focusable="false">
   <rect x="4" y="6" width="56" height="9" rx="2.5" fill="${hex}"/><path d="M8 17h48l-4 53H12z" fill="${hex}"/>
   <circle cx="17" cy="72" r="6" fill="#20262a"/><circle cx="47" cy="72" r="6" fill="#20262a"/></svg>`;
-$("bin-list").innerHTML = council.bins.map((b) =>
-  `<li>${BIN(b.hex)}<p><strong>${b.colour}</strong><br>${b.takes}<br><span>${b.every}</span></p></li>`).join("");
+// The council's bin key lives in the "Bins and recycling" service: the facts at a glance,
+// from the council's own collection page, even while the assistant is switched off.
+const binKey = () => `<ul class="bin-key">${council.bins.map((b) =>
+  `<li>${BIN(b.hex)}<span><strong>${b.colour}</strong> ${b.takes.toLowerCase()}, ${b.every}</span></li>`).join("")}</ul>
+  <span class="bin-note">${council.putOut}</span>`;
 
 const icon = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d}</svg>`;
 const ICONS = {
@@ -51,6 +52,16 @@ for (const s of SERVICES) {
   b.querySelector(".service-text span").textContent = s.text;
   b.addEventListener("click", () => startQuestion(s.ask || council.request));
   li.append(b);
+  if (s.id === "bins") {
+    li.classList.add("service-wide");
+    const key = document.createElement("div");
+    key.className = "bin-panel";
+    key.innerHTML = binKey();
+    const more = document.createElement("a");
+    more.href = council.binsSource; more.textContent = "Check your collection days on the council's site";
+    key.append(more);
+    li.append(key);
+  }
   $("service-list").append(li);
 }
 

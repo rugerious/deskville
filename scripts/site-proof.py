@@ -44,7 +44,7 @@ print("== the sites")
 for c in councils:
     status, h, body = get(f"https://{c}.deskville.co.uk/")
     page = body.decode("utf-8", "replace")
-    check(status == 200 and "Unofficial demonstration" in page, f"https://{c}.deskville.co.uk/ serves the page with the notice", str(status))
+    check(status == 200 and "Not <span data-council-name></span> Council's website" in page and "Unofficial demonstration" in page, f"https://{c}.deskville.co.uk/ serves the page with both unofficial notices", str(status))
     check("Content-Security-Policy" in page and "default-src 'none'" in page, f"{c}: the page carries its Content Security Policy")
     check("max-age" in h.get("strict-transport-security", ""), f"{c}: HSTS from the managed security headers", h.get("strict-transport-security", "missing"))
     check(h.get("x-content-type-options") == "nosniff" and h.get("x-frame-options") in ("SAMEORIGIN", "DENY"),

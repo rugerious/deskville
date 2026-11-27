@@ -57,7 +57,7 @@ export const COUNCILS = {
 // The questions behind the service shortcuts: the same for both councils, answered
 // from each council's own pages.
 export const SERVICES = [
-  { id: "bins", title: "Bins and recycling", text: "Which bin, collection days, missed bins.", ask: "Which bin does my glass go in?" },
+  { id: "bins", title: "Bins and recycling", text: "Collection days, missed bins, bulky items.", ask: "My bin was missed. When can I report it?" },
   { id: "tax", title: "Council tax", text: "Paying, bands and discounts.", ask: "I live alone. Can I get money off my council tax?" },
   { id: "roads", title: "Roads and parking", text: "Permits, fines and potholes.", ask: "How do I report a pothole?" },
   { id: "requests", title: "My requests", text: "Where a request you made has got to.", ask: null },
